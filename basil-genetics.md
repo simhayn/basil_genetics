@@ -441,8 +441,8 @@ cbind(phenames(data))
 Plot the correlation matrices using corrplot
 
 ``` r
-mat<-cor(pull.pheno(data,1:13),use = "complete.obs")
-corrplot(mat, method = "color", addCoef.col = "orange", tl.col = "black", tl.srt = 35,tl.cex=0.7,number.cex=0.5) 
+mat<-cor(pull.pheno(data,c(1:10,12,13,11)),use = "complete.obs")
+corrplot(mat,type = 'upper',method = "color", addCoef.col = "orange", tl.col = "black", tl.srt = 35,tl.cex=0.7,number.cex=0.5) 
 ```
 
 ![](basil-genetics_files/figure-gfm/unnamed-chunk-31-1.png)<!-- -->
@@ -453,7 +453,7 @@ Fusarium
 
 ``` r
 mat<-cor(pull.pheno(data,c(7:10,12)),use = "complete.obs")
-corrplot(mat, method = "color", addCoef.col = "white", tl.col = "black", tl.srt = 35)
+corrplot(mat, type='upper',method = "color", addCoef.col = "white", tl.col = "black", tl.srt = 35)
 ```
 
 ![](basil-genetics_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
@@ -462,7 +462,7 @@ Anthocyanin
 
 ``` r
 mat<-cor(pull.pheno(data,1:6),use = "complete.obs")
-corrplot(mat, method = "color", addCoef.col = "white", tl.col = "black", tl.srt = 35)
+corrplot(mat, type='upper',method = "color", addCoef.col = "white", tl.col = "black", tl.srt = 35)
 ```
 
 ![](basil-genetics_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
@@ -479,7 +479,7 @@ Perform genome scans to identify QTL
 if (all(file.exists("genome_scans.Rdata","scan2_part1.Rdata","scan2_lod_part2.Rdata"))) {
   message("Loading precomputed genome scans from genome_scans.Rdata to save time.")
   load("genome_scans.Rdata")
-  # Load the parts (scan2 is a large file so i split it to 2 parts)
+  # Load the parts (scan2 is a large file so I split it into 2 parts)
   load("scan2_part1.Rdata")
   load("scan2_lod_part2.Rdata")
   lod_part1<-scan2.partial$lod
@@ -528,7 +528,7 @@ if (all(file.exists("genome_scans.Rdata","scan2_part1.Rdata","scan2_lod_part2.Rd
    data<-calc.genoprob(data,2,map.function="kosambi")
    scan2<-scantwo(data,pheno.col=c(1:n),method="hk")
    #permutation test
-   ##this proccess is heavy so I've split it into 4 parts and then merged the results. with better CPU performance U can run the following line instead:
+   ##this proccess is heavy so I split it into 4 parts and then merged the results. with better CPU performance U can run the following line instead:
    ##scan2perm.bin<-scantwo(data,pheno.col=c(1:n),method="hk",n.perm=1000)
    #res1
    operm2 <- vector("list", 100)
@@ -554,7 +554,7 @@ if (all(file.exists("genome_scans.Rdata","scan2_part1.Rdata","scan2_lod_part2.Rd
    data<-calc.genoprob(data,10,map.function="kosambi")
    scan2.bin<-scantwo(data,pheno.col=c(12,13),method="em",model="binary",verbose=T)
    #permutation test
-   ##this proccess is heavy so I've split it into 4 parts and then merged the results. with better CPU performance U can run the following line instead:
+   ##this proccess is heavy so I split it into 4 parts and then merged the results. with better CPU performance U can run the following line instead:
   ##scan2perm.bin<-scantwo(data,pheno.col=c(12:13),method="em",model="binary",n.perm=1000)
   operm2 <- vector("list", 200)
   for(i in 1:100 ){operm2[[i]]<-scantwo(data,pheno.col=c(12:13),method="em",model="binary",n.perm=5,n.cluster=2)}
@@ -614,41 +614,54 @@ for(i in 1:n){
 
     ## pos: 36.14001 33.80107 56.70621 42 15.68374 
     ## Iteration 1 
-    ##  Q4 pos: 42 -> 10
-    ##     LOD increase:  2.466 
-    ##  Q2 pos: 33.80107 -> 24
-    ##     LOD increase:  0.504 
+    ##  Q1 pos: 36.14001 -> 32
+    ##     LOD increase:  0.031 
     ##  Q5 pos: 15.68374 -> 15.68374
     ##     LOD increase:  0 
-    ##  Q1 pos: 36.14001 -> 12
-    ##     LOD increase:  0.11 
+    ##  Q2 pos: 33.80107 -> 3.423914
+    ##     LOD increase:  0.906 
+    ##  Q4 pos: 42 -> 12
+    ##     LOD increase:  1.969 
     ##  Q3 pos: 56.70621 -> 56.30351
-    ##     LOD increase:  0.011 
-    ## all pos: 36.14001 33.80107 56.70621 42 15.68374 -> 12 24 56.30351 10 15.68374 
-    ## LOD increase at this iteration:  3.092 
+    ##     LOD increase:  0.015 
+    ## all pos: 36.14001 33.80107 56.70621 42 15.68374 -> 32 3.423914 56.30351 12 15.68374 
+    ## LOD increase at this iteration:  2.921 
     ## Iteration 2 
     ##  Q3 pos: 56.30351 -> 56.30351
     ##     LOD increase:  0 
-    ##  Q4 pos: 10 -> 12
-    ##     LOD increase:  0.11 
+    ##  Q2 pos: 3.423914 -> 24
+    ##     LOD increase:  0.101 
+    ##  Q1 pos: 32 -> 12
+    ##     LOD increase:  0.179 
+    ##  Q4 pos: 12 -> 12
+    ##     LOD increase:  0 
+    ##  Q5 pos: 15.68374 -> 15.68374
+    ##     LOD increase:  0 
+    ## all pos: 32 3.423914 56.30351 12 15.68374 -> 12 24 56.30351 12 15.68374 
+    ## LOD increase at this iteration:  0.28 
+    ## Iteration 3 
     ##  Q5 pos: 15.68374 -> 15.68374
     ##     LOD increase:  0 
     ##  Q2 pos: 24 -> 3.423914
     ##     LOD increase:  0.144 
+    ##  Q4 pos: 12 -> 12
+    ##     LOD increase:  0 
     ##  Q1 pos: 12 -> 10.14508
     ##     LOD increase:  0.034 
-    ## all pos: 12 24 56.30351 10 15.68374 -> 10.14508 3.423914 56.30351 12 15.68374 
-    ## LOD increase at this iteration:  0.287 
-    ## Iteration 3 
-    ##  Q1 pos: 10.14508 -> 10.14508
+    ##  Q3 pos: 56.30351 -> 56.30351
     ##     LOD increase:  0 
+    ## all pos: 12 24 56.30351 12 15.68374 -> 10.14508 3.423914 56.30351 12 15.68374 
+    ## LOD increase at this iteration:  0.177 
+    ## Iteration 4 
     ##  Q3 pos: 56.30351 -> 56.30351
     ##     LOD increase:  0 
     ##  Q2 pos: 3.423914 -> 3.423914
     ##     LOD increase:  0 
-    ##  Q5 pos: 15.68374 -> 15.68374
+    ##  Q1 pos: 10.14508 -> 10.14508
     ##     LOD increase:  0 
     ##  Q4 pos: 12 -> 12
+    ##     LOD increase:  0 
+    ##  Q5 pos: 15.68374 -> 15.68374
     ##     LOD increase:  0 
     ## all pos: 10.14508 3.423914 56.30351 12 15.68374 -> 10.14508 3.423914 56.30351 12 15.68374 
     ## LOD increase at this iteration:  0 
@@ -661,41 +674,54 @@ for(i in 1:n){
     ## Scanning chr LG18 
     ## pos: 36.14001 33.80107 56.70621 38 15.68374 
     ## Iteration 1 
-    ##  Q5 pos: 15.68374 -> 15.68374
-    ##     LOD increase:  0 
-    ##  Q3 pos: 56.70621 -> 56.70621
-    ##     LOD increase:  0 
+    ##  Q2 pos: 33.80107 -> 3.423914
+    ##     LOD increase:  0.451 
     ##  Q4 pos: 38 -> 12
-    ##     LOD increase:  2.779 
-    ##  Q2 pos: 33.80107 -> 26
-    ##     LOD increase:  0.404 
-    ##  Q1 pos: 36.14001 -> 12
-    ##     LOD increase:  0.421 
-    ## all pos: 36.14001 33.80107 56.70621 38 15.68374 -> 12 26 56.70621 12 15.68374 
-    ## LOD increase at this iteration:  3.605 
-    ## Iteration 2 
-    ##  Q1 pos: 12 -> 12
-    ##     LOD increase:  0 
-    ##  Q2 pos: 26 -> 26
-    ##     LOD increase:  0 
+    ##     LOD increase:  2.099 
+    ##  Q3 pos: 56.70621 -> 56.30351
+    ##     LOD increase:  0.013 
     ##  Q5 pos: 15.68374 -> 15.68374
     ##     LOD increase:  0 
+    ##  Q1 pos: 36.14001 -> 10.14508
+    ##     LOD increase:  0.726 
+    ## all pos: 36.14001 33.80107 56.70621 38 15.68374 -> 10.14508 3.423914 56.30351 12 15.68374 
+    ## LOD increase at this iteration:  3.288 
+    ## Iteration 2 
+    ##  Q1 pos: 10.14508 -> 10.14508
+    ##     LOD increase:  0 
+    ##  Q2 pos: 3.423914 -> 26
+    ##     LOD increase:  0.321 
     ##  Q4 pos: 12 -> 12
     ##     LOD increase:  0 
-    ##  Q3 pos: 56.70621 -> 56.30351
-    ##     LOD increase:  0.005 
-    ## all pos: 12 26 56.70621 12 15.68374 -> 12 26 56.30351 12 15.68374 
-    ## LOD increase at this iteration:  0.005 
+    ##  Q5 pos: 15.68374 -> 15.68374
+    ##     LOD increase:  0 
+    ##  Q3 pos: 56.30351 -> 56.30351
+    ##     LOD increase:  0 
+    ## all pos: 10.14508 3.423914 56.30351 12 15.68374 -> 10.14508 26 56.30351 12 15.68374 
+    ## LOD increase at this iteration:  0.321 
     ## Iteration 3 
     ##  Q3 pos: 56.30351 -> 56.30351
     ##     LOD increase:  0 
-    ##  Q2 pos: 26 -> 26
+    ##  Q5 pos: 15.68374 -> 15.68374
     ##     LOD increase:  0 
-    ##  Q1 pos: 12 -> 12
+    ##  Q1 pos: 10.14508 -> 12
+    ##     LOD increase:  0.001 
+    ##  Q2 pos: 26 -> 26
     ##     LOD increase:  0 
     ##  Q4 pos: 12 -> 12
     ##     LOD increase:  0 
+    ## all pos: 10.14508 26 56.30351 12 15.68374 -> 12 26 56.30351 12 15.68374 
+    ## LOD increase at this iteration:  0.001 
+    ## Iteration 4 
+    ##  Q4 pos: 12 -> 12
+    ##     LOD increase:  0 
+    ##  Q1 pos: 12 -> 12
+    ##     LOD increase:  0 
+    ##  Q2 pos: 26 -> 26
+    ##     LOD increase:  0 
     ##  Q5 pos: 15.68374 -> 15.68374
+    ##     LOD increase:  0 
+    ##  Q3 pos: 56.30351 -> 56.30351
     ##     LOD increase:  0 
     ## all pos: 12 26 56.30351 12 15.68374 -> 12 26 56.30351 12 15.68374 
     ## LOD increase at this iteration:  0 
@@ -708,52 +734,82 @@ for(i in 1:n){
     ## Scanning chr LG18 
     ## pos: 36.14001 33.80107 8 56.70621 38 15.68374 
     ## Iteration 1 
-    ##  Q1 pos: 36.14001 -> 30
-    ##     LOD increase:  0.159 
-    ##  Q6 pos: 15.68374 -> 15.68374
-    ##     LOD increase:  0 
-    ##  Q5 pos: 38 -> 10
-    ##     LOD increase:  2.778 
     ##  Q4 pos: 56.70621 -> 56.30351
-    ##     LOD increase:  0.013 
-    ##  Q3 pos: 8 -> 7.368317
-    ##     LOD increase:  0.035 
-    ##  Q2 pos: 33.80107 -> 26
-    ##     LOD increase:  0.532 
-    ## all pos: 36.14001 33.80107 8 56.70621 38 15.68374 -> 30 26 7.368317 56.30351 10 15.68374 
-    ## LOD increase at this iteration:  3.517 
+    ##     LOD increase:  0.028 
+    ##  Q3 pos: 8 -> 13.61983
+    ##     LOD increase:  0.13 
+    ##  Q2 pos: 33.80107 -> 3.423914
+    ##     LOD increase:  0.635 
+    ##  Q6 pos: 15.68374 -> 15.68374
+    ##     LOD increase:  0 
+    ##  Q1 pos: 36.14001 -> 30
+    ##     LOD increase:  0.128 
+    ##  Q5 pos: 38 -> 10
+    ##     LOD increase:  1.901 
+    ## all pos: 36.14001 33.80107 8 56.70621 38 15.68374 -> 30 3.423914 13.61983 56.30351 10 15.68374 
+    ## LOD increase at this iteration:  2.822 
     ## Iteration 2 
-    ##  Q2 pos: 26 -> 26
-    ##     LOD increase:  0 
-    ##  Q6 pos: 15.68374 -> 15.68374
+    ##  Q5 pos: 10 -> 10
     ##     LOD increase:  0 
     ##  Q4 pos: 56.30351 -> 56.30351
     ##     LOD increase:  0 
-    ##  Q1 pos: 30 -> 32
-    ##     LOD increase:  0.02 
-    ##  Q3 pos: 7.368317 -> 7.368317
+    ##  Q3 pos: 13.61983 -> 7.368317
+    ##     LOD increase:  0.015 
+    ##  Q6 pos: 15.68374 -> 15.68374
     ##     LOD increase:  0 
-    ##  Q5 pos: 10 -> 10
-    ##     LOD increase:  0 
-    ## all pos: 30 26 7.368317 56.30351 10 15.68374 -> 32 26 7.368317 56.30351 10 15.68374 
-    ## LOD increase at this iteration:  0.02 
+    ##  Q1 pos: 30 -> 10.14508
+    ##     LOD increase:  0.347 
+    ##  Q2 pos: 3.423914 -> 24
+    ##     LOD increase:  0.285 
+    ## all pos: 30 3.423914 13.61983 56.30351 10 15.68374 -> 10.14508 24 7.368317 56.30351 10 15.68374 
+    ## LOD increase at this iteration:  0.647 
     ## Iteration 3 
-    ##  Q5 pos: 10 -> 10
+    ##  Q2 pos: 24 -> 24
     ##     LOD increase:  0 
-    ##  Q3 pos: 7.368317 -> 7.368317
+    ##  Q5 pos: 10 -> 12
+    ##     LOD increase:  0.095 
+    ##  Q1 pos: 10.14508 -> 12
+    ##     LOD increase:  0.019 
+    ##  Q6 pos: 15.68374 -> 15.68374
     ##     LOD increase:  0 
-    ##  Q1 pos: 32 -> 32
+    ##  Q3 pos: 7.368317 -> 52.5869
+    ##     LOD increase:  0.304 
+    ##  Q4 pos: 56.30351 -> 56.30351
+    ##     LOD increase:  0 
+    ## all pos: 10.14508 24 7.368317 56.30351 10 15.68374 -> 12 24 52.5869 56.30351 12 15.68374 
+    ## LOD increase at this iteration:  0.418 
+    ## Iteration 4 
+    ##  Q4 pos: 56.30351 -> 56.30351
+    ##     LOD increase:  0 
+    ##  Q1 pos: 12 -> 10.14508
+    ##     LOD increase:  0.042 
+    ##  Q6 pos: 15.68374 -> 15.68374
+    ##     LOD increase:  0 
+    ##  Q2 pos: 24 -> 24
+    ##     LOD increase:  0 
+    ##  Q3 pos: 52.5869 -> 52.5869
+    ##     LOD increase:  0 
+    ##  Q5 pos: 12 -> 12
+    ##     LOD increase:  0 
+    ## all pos: 12 24 52.5869 56.30351 12 15.68374 -> 10.14508 24 52.5869 56.30351 12 15.68374 
+    ## LOD increase at this iteration:  0.042 
+    ## Iteration 5 
+    ##  Q5 pos: 12 -> 12
     ##     LOD increase:  0 
     ##  Q6 pos: 15.68374 -> 15.68374
     ##     LOD increase:  0 
-    ##  Q2 pos: 26 -> 26
+    ##  Q2 pos: 24 -> 24
     ##     LOD increase:  0 
     ##  Q4 pos: 56.30351 -> 56.30351
     ##     LOD increase:  0 
-    ## all pos: 32 26 7.368317 56.30351 10 15.68374 -> 32 26 7.368317 56.30351 10 15.68374 
+    ##  Q1 pos: 10.14508 -> 10.14508
+    ##     LOD increase:  0 
+    ##  Q3 pos: 52.5869 -> 52.5869
+    ##     LOD increase:  0 
+    ## all pos: 10.14508 24 52.5869 56.30351 12 15.68374 -> 10.14508 24 52.5869 56.30351 12 15.68374 
     ## LOD increase at this iteration:  0 
-    ## overall pos: 36.14001 33.80107 8 56.70621 38 15.68374 -> 32 26 7.368317 56.30351 10 15.68374 
-    ## LOD increase overall:  3.537 
+    ## overall pos: 36.14001 33.80107 8 56.70621 38 15.68374 -> 10.14508 24 52.5869 56.30351 12 15.68374 
+    ## LOD increase overall:  3.929 
     ## Scanning chr LG6 
     ## Scanning chr LG7 
     ## Scanning chr LG9 
@@ -764,27 +820,27 @@ for(i in 1:n){
     ## Iteration 1 
     ##  Q1 pos: 36.14001 -> 16
     ##     LOD increase:  0.401 
-    ##  Q3 pos: 36 -> 10
-    ##     LOD increase:  1.197 
     ##  Q2 pos: 56.70621 -> 56.30351
-    ##     LOD increase:  0.047 
+    ##     LOD increase:  0.034 
+    ##  Q3 pos: 36 -> 10
+    ##     LOD increase:  1.21 
     ## all pos: 36.14001 56.70621 36 -> 16 56.30351 10 
     ## LOD increase at this iteration:  1.646 
     ## Iteration 2 
-    ##  Q2 pos: 56.30351 -> 56.30351
-    ##     LOD increase:  0 
     ##  Q3 pos: 10 -> 10
     ##     LOD increase:  0 
     ##  Q1 pos: 16 -> 10.14508
     ##     LOD increase:  0.281 
+    ##  Q2 pos: 56.30351 -> 56.30351
+    ##     LOD increase:  0 
     ## all pos: 16 56.30351 10 -> 10.14508 56.30351 10 
     ## LOD increase at this iteration:  0.281 
     ## Iteration 3 
+    ##  Q2 pos: 56.30351 -> 56.30351
+    ##     LOD increase:  0 
     ##  Q1 pos: 10.14508 -> 10.14508
     ##     LOD increase:  0 
     ##  Q3 pos: 10 -> 10
-    ##     LOD increase:  0 
-    ##  Q2 pos: 56.30351 -> 56.30351
     ##     LOD increase:  0 
     ## all pos: 10.14508 56.30351 10 -> 10.14508 56.30351 10 
     ## LOD increase at this iteration:  0 
@@ -860,16 +916,16 @@ for(i in 1:n){
     ## Iteration 3 
     ##  Q2 pos: 12 -> 12
     ##     LOD increase:  0 
-    ##  Q1 pos: 12.44735 -> 3.563067
-    ##     LOD increase:  0.049 
     ##  Q3 pos: 0 -> 0
     ##     LOD increase:  0 
+    ##  Q1 pos: 12.44735 -> 3.563067
+    ##     LOD increase:  0.049 
     ## all pos: 12.44735 12 0 -> 3.563067 12 0 
     ## LOD increase at this iteration:  0.049 
     ## Iteration 4 
-    ##  Q3 pos: 0 -> 0
-    ##     LOD increase:  0 
     ##  Q1 pos: 3.563067 -> 3.563067
+    ##     LOD increase:  0 
+    ##  Q3 pos: 0 -> 0
     ##     LOD increase:  0 
     ##  Q2 pos: 12 -> 12
     ##     LOD increase:  0 
@@ -941,20 +997,13 @@ for(i in 1:2){
     ## Scanning chr LG24 
     ## pos: 56.70621 9 
     ## Iteration 1 
-    ##  Q2 pos: 9 -> 36
-    ##     LOD increase:  0.869 
     ##  Q1 pos: 56.70621 -> 8.160178
-    ##     LOD increase:  1.365 
-    ## all pos: 56.70621 9 -> 8.160178 36 
-    ## LOD increase at this iteration:  2.234 
+    ##     LOD increase:  1.426 
+    ##  Q2 pos: 9 -> 38.08046
+    ##     LOD increase:  0.81 
+    ## all pos: 56.70621 9 -> 8.160178 38.08046 
+    ## LOD increase at this iteration:  2.236 
     ## Iteration 2 
-    ##  Q1 pos: 8.160178 -> 8.160178
-    ##     LOD increase:  0 
-    ##  Q2 pos: 36 -> 38.08046
-    ##     LOD increase:  0.002 
-    ## all pos: 8.160178 36 -> 8.160178 38.08046 
-    ## LOD increase at this iteration:  0.002 
-    ## Iteration 3 
     ##  Q2 pos: 38.08046 -> 38.08046
     ##     LOD increase:  0 
     ##  Q1 pos: 8.160178 -> 8.160178
@@ -1683,13 +1732,20 @@ for(i in 1:2){
 
     ## pos: 56.70621 10 
     ## Iteration 1 
+    ##  Q2 pos: 10 -> 34.78712
+    ##     LOD increase:  0.847 
     ##  Q1 pos: 56.70621 -> 8.160178
-    ##     LOD increase:  1.426 
-    ##  Q2 pos: 10 -> 38.08046
-    ##     LOD increase:  0.815 
-    ## all pos: 56.70621 10 -> 8.160178 38.08046 
-    ## LOD increase at this iteration:  2.24 
+    ##     LOD increase:  1.324 
+    ## all pos: 56.70621 10 -> 8.160178 34.78712 
+    ## LOD increase at this iteration:  2.171 
     ## Iteration 2 
+    ##  Q1 pos: 8.160178 -> 8.160178
+    ##     LOD increase:  0 
+    ##  Q2 pos: 34.78712 -> 38.08046
+    ##     LOD increase:  0.069 
+    ## all pos: 8.160178 34.78712 -> 8.160178 38.08046 
+    ## LOD increase at this iteration:  0.069 
+    ## Iteration 3 
     ##  Q2 pos: 38.08046 -> 38.08046
     ##     LOD increase:  0 
     ##  Q1 pos: 8.160178 -> 8.160178

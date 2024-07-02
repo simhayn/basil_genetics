@@ -290,8 +290,8 @@ for (i in c(1:10, 12, 15, 13, 11)) {
 Plot the correlation matrices using corrplot
 
 ```{r}
-mat<-cor(pull.pheno(data,1:13),use = "complete.obs")
-corrplot(mat, method = "color", addCoef.col = "orange", tl.col = "black", tl.srt = 35,tl.cex=0.7,number.cex=0.5) 
+mat<-cor(pull.pheno(data,c(1:10,12,13,11)),use = "complete.obs")
+corrplot(mat,type = 'upper',method = "color", addCoef.col = "orange", tl.col = "black", tl.srt = 35,tl.cex=0.7,number.cex=0.5) 
 ```
 
 Now, for each group of phenotypes
@@ -300,14 +300,14 @@ Fusarium
 
 ```{r}
 mat<-cor(pull.pheno(data,c(7:10,12)),use = "complete.obs")
-corrplot(mat, method = "color", addCoef.col = "white", tl.col = "black", tl.srt = 35)
+corrplot(mat, type='upper',method = "color", addCoef.col = "white", tl.col = "black", tl.srt = 35)
 ```
 
 Anthocyanin
 
 ```{r}
 mat<-cor(pull.pheno(data,1:6),use = "complete.obs")
-corrplot(mat, method = "color", addCoef.col = "white", tl.col = "black", tl.srt = 35)
+corrplot(mat, type='upper',method = "color", addCoef.col = "white", tl.col = "black", tl.srt = 35)
 ```
 
 There is a strong correlation between the phenotypes in the same group. the different conditions (in anthocyanin) or repetitions (in fusarium) had a limited effect on the resulting phenotype.
@@ -320,7 +320,7 @@ Perform genome scans to identify QTL
 if (all(file.exists("genome_scans.Rdata","scan2_part1.Rdata","scan2_lod_part2.Rdata"))) {
   message("Loading precomputed genome scans from genome_scans.Rdata to save time.")
   load("genome_scans.Rdata")
-  # Load the parts (scan2 is a large file so i split it to 2 parts)
+  # Load the parts (scan2 is a large file so I split it into 2 parts)
   load("scan2_part1.Rdata")
   load("scan2_lod_part2.Rdata")
   lod_part1<-scan2.partial$lod
@@ -369,7 +369,7 @@ if (all(file.exists("genome_scans.Rdata","scan2_part1.Rdata","scan2_lod_part2.Rd
    data<-calc.genoprob(data,2,map.function="kosambi")
    scan2<-scantwo(data,pheno.col=c(1:n),method="hk")
    #permutation test
-   ##this proccess is heavy so I've split it into 4 parts and then merged the results. with better CPU performance U can run the following line instead:
+   ##this proccess is heavy so I split it into 4 parts and then merged the results. with better CPU performance U can run the following line instead:
    ##scan2perm.bin<-scantwo(data,pheno.col=c(1:n),method="hk",n.perm=1000)
    #res1
    operm2 <- vector("list", 100)
@@ -395,7 +395,7 @@ if (all(file.exists("genome_scans.Rdata","scan2_part1.Rdata","scan2_lod_part2.Rd
    data<-calc.genoprob(data,10,map.function="kosambi")
    scan2.bin<-scantwo(data,pheno.col=c(12,13),method="em",model="binary",verbose=T)
    #permutation test
-   ##this proccess is heavy so I've split it into 4 parts and then merged the results. with better CPU performance U can run the following line instead:
+   ##this proccess is heavy so I split it into 4 parts and then merged the results. with better CPU performance U can run the following line instead:
   ##scan2perm.bin<-scantwo(data,pheno.col=c(12:13),method="em",model="binary",n.perm=1000)
   operm2 <- vector("list", 200)
   for(i in 1:100 ){operm2[[i]]<-scantwo(data,pheno.col=c(12:13),method="em",model="binary",n.perm=5,n.cluster=2)}
