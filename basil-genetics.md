@@ -400,17 +400,8 @@ faudpc_values <- c(rep(0, 12), rep(c(90, 142), each = 6))
 parents <- data.frame(rbind(matrix(0,12,9), matrix(5,12,9)),faudpc_values, Cold = cold_values,row.names = c(paste0("P1_", 1:12), paste0("DP_", 1:12)))
 ant_values <-c(5, 4.5, 4.5, 4.5, 4.5, 3.5, 4, 4.5, 4, 4.5, 4, 4)
 parents[13:24,1:3] <-matrix(ant_values,12,3)
-colnames(parents) <-phenames(data)[1:11]
-head(parents)
+colnames(parents) <-phenames(data)[1:n]
 ```
-
-    ##      AFF AFS AFL AG AYS AYL FOB1 FOB2 FOB3 F_AUDPC Cold
-    ## P1_1   0   0   0  0   0   0    0    0    0       0    5
-    ## P1_2   0   0   0  0   0   0    0    0    0       0    5
-    ## P1_3   0   0   0  0   0   0    0    0    0       0    4
-    ## P1_4   0   0   0  0   0   0    0    0    0       0    6
-    ## P1_5   0   0   0  0   0   0    0    0    0       0    7
-    ## P1_6   0   0   0  0   0   0    0    0    0       0    9
 
 Check the phenotypic distribution
 
@@ -474,94 +465,6 @@ had a limited effect on the resulting phenotype.
 # QTL Analysis
 
 Perform genome scans to identify QTL
-
-``` r
-if (all(file.exists("genome_scans.Rdata","scan2_part1.Rdata","scan2_lod_part2.Rdata"))) {
-  message("Loading precomputed genome scans from genome_scans.Rdata, scan2_part1.Rdata and scan2_lod_part2.Rdata to save time.")
-  load("genome_scans.Rdata")
-  # Load the parts (scan2 is a large file so I split it into 2 parts)
-  load("scan2_part1.Rdata")
-  load("scan2_lod_part2.Rdata")
-  lod_part1<-scan2.partial$lod
-  # Combine the 'lod' matrix parts back into a single matrix
-  combined_lod <- array(NA, dim = c(dim(lod_part1)[1] + dim(lod_part2)[1], dim(lod_part1)[2], dim(lod_part1)[3]))
-  # Copy the data from the parts into the combined array
-  combined_lod[1:dim(lod_part1)[1], , ] <- lod_part1
-  combined_lod[(dim(lod_part1)[1] + 1):dim(combined_lod)[1], , ] <- lod_part2
-  # Set the dimnames attribute correctly
-  dimnames(combined_lod) <- dimnames(scan2.partial$lod)
-  # Reconstruct the scantwo object
-  scan2 <- scan2.partial  # Copy the original object structure
-  scan2$lod <- combined_lod  # Replace the 'lod' part with the combined matrix
-  # cleanup
-  rm(list=c("scan2.partial","combined_lod","lod_part1","lod_part2"))
-} else {
-  cat("The precomputed genome scans were not found\n")
-  message("Performing genome scans... This may take a long time.")
-  
-  ###ScanOne###
-  #calculate probabilities (necessary for scanone)
-  #normal #Haley-knott regression 
-  data<-calc.genoprob(data,2,map.function="kosambi")
-  #genome scan for Single-QTL
-  scan1<-scanone(data,pheno.col=c(1:n),method="hk")
-  #permutation test
-  operm <- vector("list", 100)
-  for(i in 1:100){operm[[i]]<-scanone(data,pheno.col=c(1:n),method="hk",n.perm=9,n.cluster=2)}
-  scan1perm<-do.call("rbind", operm)
-  
-  #binary #EM algorithm maximum likelihood
-  data<-calc.genoprob(data,3,map.function="kosambi")
-  #genome scan for Single-QTL
-  scan1.bin<-scanone(data,pheno.col=c(12:13),method="em",model="binary")
-  #permutation test
-  scan1perm.bin1<-scanone(data,pheno.col=c(12:13),method="em",model="binary",n.perm=1000,n.cluster=2)
-  operm <- vector("list", 100)
-  for(i in 1:100){operm[[i]]<-scanone(data,pheno.col=c(12:13),method="em",model="binary",n.perm=10,n.cluster=2)}
-   scan1perm.bin1<-do.call("rbind", operm)
-   
-   save(scan1,scan1.bin,scan1perm,scan1perm.bin,scan2.bin,scan2perm,scan2perm.bin,file="genome_scans.Rdata")
-   
-   ###ScanTwo###
-   #normal #scan genome for Two-QTL model
-   data<-clean(data)
-   data<-calc.genoprob(data,2,map.function="kosambi")
-   scan2<-scantwo(data,pheno.col=c(1:n),method="hk")
-   #permutation test
-   ##this proccess is heavy so I split it into 4 parts and then merged the results. with better CPU performance U can run the following line instead:
-   ##scan2perm.bin<-scantwo(data,pheno.col=c(1:n),method="hk",n.perm=1000)
-   #res1
-   operm2 <- vector("list", 100)
-   for(i in 1:100 ){operm2[[i]]<-scantwo(data,pheno.col=c(1:6),method="hk",n.perm=9,n.cluster=2)}
-   res1<-do.call("rbind", operm2)
-   #res2
-   operm2 <-vector("list", 100)
-   for(i in 1:100 ){operm2[[i]]<-scantwo(data,pheno.col=c(7:8),method="hk",n.perm=9,n.cluster=2)}
-   res2<-do.call("rbind", operm2)
-   #res3
-   operm2 <- vector("list", 100)
-   for(i in 1:100 ){operm2[[i]]<-scantwo(data,pheno.col=c(9:10),method="hk",n.perm=9,n.cluster=2)}
-   res3<-do.call("rbind", operm2)
-   #res4
-   operm2 <- vector("list", 100)
-   for(i in 1:100 ){operm2[[i]]<-scantwo(data,pheno.col=11,method="hk",n.perm=9,n.cluster=2)}
-   res4<-do.call("rbind", operm2)
-   #cbind the 11 phenos 
-   scan2perm<-res1
-   for(i in 1:6){scan2perm[[i]]<-cbind(res1[[i]],res2[[i]],res3[[i]],res4[[i]])}
-   
-   #binary #genome scan for two-QTL
-   data<-calc.genoprob(data,10,map.function="kosambi")
-   scan2.bin<-scantwo(data,pheno.col=c(12,13),method="em",model="binary",verbose=T)
-   #permutation test
-   ##this proccess is heavy so I split it into 4 parts and then merged the results. with better CPU performance U can run the following line instead:
-  ##scan2perm.bin<-scantwo(data,pheno.col=c(12:13),method="em",model="binary",n.perm=1000)
-  operm2 <- vector("list", 200)
-  for(i in 1:100 ){operm2[[i]]<-scantwo(data,pheno.col=c(12:13),method="em",model="binary",n.perm=5,n.cluster=2)}
-   for(i in 101:200 ){operm2[[i]]<-scantwo(data,pheno.col=c(12:13),method="em", model="binary",n.perm=5,n.cluster=2)}
-   scan2perm.bin<-do.call("rbind", operm2[1:200])
-}
-```
 
     ## Loading precomputed genome scans from genome_scans.Rdata, scan2_part1.Rdata and scan2_lod_part2.Rdata to save time.
 
@@ -629,8 +532,9 @@ for(i in 1:2){
 
 ![](basil-genetics_files/figure-gfm/unnamed-chunk-38-12.png)<!-- -->![](basil-genetics_files/figure-gfm/unnamed-chunk-38-13.png)<!-- -->
 
+The add QTL scan found nothing
+
 ``` r
-options(warn=0)
 #normal
 qtlist<-summary(scan1,perms=scan1perm,format="tabByCol",alpha=0.95,ci.function="bayesint",pvalues=T)
   data<-calc.genoprob(data,2,map.function="kosambi")
@@ -899,153 +803,15 @@ for(i in 1:n){
 }
 ```
 
-    ## Scanning full model for chr LG6 and LG6 
-    ## Scanning add've model for chr LG6 and LG6 
-    ## Scanning full model for chr LG6 and LG7 
-    ## Scanning add've model for chr LG6 and LG7 
-    ## Scanning full model for chr LG6 and LG13 
-    ## Scanning add've model for chr LG6 and LG13 
-    ## Scanning full model for chr LG6 and LG14 
-    ## Scanning add've model for chr LG6 and LG14 
-    ## Scanning full model for chr LG6 and LG18 
-    ## Scanning add've model for chr LG6 and LG18 
-    ## Scanning full model for chr LG7 and LG7 
-    ## Scanning add've model for chr LG7 and LG7 
-    ## Scanning full model for chr LG7 and LG13 
-    ## Scanning add've model for chr LG7 and LG13 
-    ## Scanning full model for chr LG7 and LG14 
-    ## Scanning add've model for chr LG7 and LG14 
-    ## Scanning full model for chr LG7 and LG18 
-    ## Scanning add've model for chr LG7 and LG18 
-    ## Scanning full model for chr LG13 and LG13 
-    ## Scanning add've model for chr LG13 and LG13 
-    ## Scanning full model for chr LG13 and LG14 
-    ## Scanning add've model for chr LG13 and LG14 
-    ## Scanning full model for chr LG13 and LG18 
-    ## Scanning add've model for chr LG13 and LG18 
-    ## Scanning full model for chr LG14 and LG14 
-    ## Scanning add've model for chr LG14 and LG14 
-    ## Scanning full model for chr LG14 and LG18 
-    ## Scanning add've model for chr LG14 and LG18 
-    ## Scanning full model for chr LG18 and LG18 
-    ## Scanning add've model for chr LG18 and LG18 
-    ## Scanning full model for chr LG6 and LG6 
-    ## Scanning add've model for chr LG6 and LG6 
-    ## Scanning full model for chr LG6 and LG7 
-    ## Scanning add've model for chr LG6 and LG7 
-    ## Scanning full model for chr LG6 and LG13 
-    ## Scanning add've model for chr LG6 and LG13 
-    ## Scanning full model for chr LG6 and LG14 
-    ## Scanning add've model for chr LG6 and LG14 
-    ## Scanning full model for chr LG6 and LG18 
-    ## Scanning add've model for chr LG6 and LG18 
-    ## Scanning full model for chr LG7 and LG7 
-    ## Scanning add've model for chr LG7 and LG7 
-    ## Scanning full model for chr LG7 and LG13 
-    ## Scanning add've model for chr LG7 and LG13 
-    ## Scanning full model for chr LG7 and LG14 
-    ## Scanning add've model for chr LG7 and LG14 
-    ## Scanning full model for chr LG7 and LG18 
-    ## Scanning add've model for chr LG7 and LG18 
-    ## Scanning full model for chr LG13 and LG13 
-    ## Scanning add've model for chr LG13 and LG13 
-    ## Scanning full model for chr LG13 and LG14 
-    ## Scanning add've model for chr LG13 and LG14 
-    ## Scanning full model for chr LG13 and LG18 
-    ## Scanning add've model for chr LG13 and LG18 
-    ## Scanning full model for chr LG14 and LG14 
-    ## Scanning add've model for chr LG14 and LG14 
-    ## Scanning full model for chr LG14 and LG18 
-    ## Scanning add've model for chr LG14 and LG18 
-    ## Scanning full model for chr LG18 and LG18 
-    ## Scanning add've model for chr LG18 and LG18 
-    ## Scanning full model for chr LG6 and LG6 
-    ## Scanning add've model for chr LG6 and LG6 
-    ## Scanning full model for chr LG6 and LG7 
-    ## Scanning add've model for chr LG6 and LG7 
-    ## Scanning full model for chr LG6 and LG9 
-    ## Scanning add've model for chr LG6 and LG9 
-    ## Scanning full model for chr LG6 and LG13 
-    ## Scanning add've model for chr LG6 and LG13 
-    ## Scanning full model for chr LG6 and LG14 
-    ## Scanning add've model for chr LG6 and LG14 
-    ## Scanning full model for chr LG6 and LG18 
-    ## Scanning add've model for chr LG6 and LG18 
-    ## Scanning full model for chr LG7 and LG7 
-    ## Scanning add've model for chr LG7 and LG7 
-    ## Scanning full model for chr LG7 and LG9 
-    ## Scanning add've model for chr LG7 and LG9 
-    ## Scanning full model for chr LG7 and LG13 
-    ## Scanning add've model for chr LG7 and LG13 
-    ## Scanning full model for chr LG7 and LG14 
-    ## Scanning add've model for chr LG7 and LG14 
-    ## Scanning full model for chr LG7 and LG18 
-    ## Scanning add've model for chr LG7 and LG18 
-    ## Scanning full model for chr LG9 and LG9 
-    ## Scanning add've model for chr LG9 and LG9 
-    ## Scanning full model for chr LG9 and LG13 
-    ## Scanning add've model for chr LG9 and LG13 
-    ## Scanning full model for chr LG9 and LG14 
-    ## Scanning add've model for chr LG9 and LG14 
-    ## Scanning full model for chr LG9 and LG18 
-    ## Scanning add've model for chr LG9 and LG18 
-    ## Scanning full model for chr LG13 and LG13 
-    ## Scanning add've model for chr LG13 and LG13 
-    ## Scanning full model for chr LG13 and LG14 
-    ## Scanning add've model for chr LG13 and LG14 
-    ## Scanning full model for chr LG13 and LG18 
-    ## Scanning add've model for chr LG13 and LG18 
-    ## Scanning full model for chr LG14 and LG14 
-    ## Scanning add've model for chr LG14 and LG14 
-    ## Scanning full model for chr LG14 and LG18 
-    ## Scanning add've model for chr LG14 and LG18 
-    ## Scanning full model for chr LG18 and LG18 
-    ## Scanning add've model for chr LG18 and LG18 
-    ## Scanning full model for chr LG6 and LG6 
-    ## Scanning add've model for chr LG6 and LG6 
-    ## Scanning full model for chr LG6 and LG13 
-    ## Scanning add've model for chr LG6 and LG13 
-    ## Scanning full model for chr LG6 and LG14 
-    ## Scanning add've model for chr LG6 and LG14 
-    ## Scanning full model for chr LG13 and LG13 
-    ## Scanning add've model for chr LG13 and LG13 
-    ## Scanning full model for chr LG13 and LG14 
-    ## Scanning add've model for chr LG13 and LG14 
-    ## Scanning full model for chr LG14 and LG14 
-    ## Scanning add've model for chr LG14 and LG14 
-    ## Scanning full model for chr LG13 and LG13 
-    ## Scanning add've model for chr LG13 and LG13 
-    ## Scanning full model for chr LG13 and LG13 
-    ## Scanning add've model for chr LG13 and LG13
+    ## Warning in addpair(data, qtlist[[p]][, 1], p, rqtl[[p]], method = "hk", : Dropping 31 individuals with missing phenotypes.
+
+    ## Warning in fitqtlengine(pheno = pheno, qtl = qtl, covar = covar, formula = formula, : Dropping 31 individuals with missing phenotypes.
 
     ## Warning in addpair(data, qtlist[[p]][, 1], p, rqtl[[p]], method = "hk", : Dropping 31 individuals with missing phenotypes.
 
-    ## Scanning full model for chr LG19 and LG19 
-    ## Scanning add've model for chr LG19 and LG19
-
     ## Warning in fitqtlengine(pheno = pheno, qtl = qtl, covar = covar, formula = formula, : Dropping 31 individuals with missing phenotypes.
 
-    ## Warning in fitqtlengine(pheno = pheno, qtl = qtl, covar = covar, formula = formula, : Dropping 31 individuals with missing phenotypes.
-
-    ## Scanning full model for chr LG10 and LG10 
-    ## Scanning add've model for chr LG10 and LG10 
-    ## Scanning full model for chr LG10 and LG19 
-    ## Scanning add've model for chr LG10 and LG19 
-    ## Scanning full model for chr LG10 and LG24 
-    ## Scanning add've model for chr LG10 and LG24 
-    ## Scanning full model for chr LG19 and LG19 
-    ## Scanning add've model for chr LG19 and LG19 
-    ## Scanning full model for chr LG19 and LG24 
-    ## Scanning add've model for chr LG19 and LG24 
-    ## Scanning full model for chr LG24 and LG24 
-    ## Scanning add've model for chr LG24 and LG24
-
-    ## Warning in fitqtlengine(pheno = pheno, qtl = qtl, covar = covar, formula = formula, : Dropping 31 individuals with missing phenotypes.
-
-    ## Warning in fitqtlengine(pheno = pheno, qtl = qtl, covar = covar, formula = formula, : Dropping 31 individuals with missing phenotypes.
-
-    ## Scanning full model for chr LG19 and LG19 
-    ## Scanning add've model for chr LG19 and LG19
+    ## Warning in addpair(data, qtlist[[p]][, 1], p, rqtl[[p]], method = "hk", : Dropping 31 individuals with missing phenotypes.
 
     ## Warning in fitqtlengine(pheno = pheno, qtl = qtl, covar = covar, formula = formula, : Dropping 31 individuals with missing phenotypes.
 
@@ -1072,65 +838,9 @@ for(i in 1:2){
 }
 ```
 
-    ## pos: 40 10 
-    ## Iteration 1 
-    ##  Q2 pos: 10 -> 49.31839
-    ##     LOD increase:  0.321 
-    ##  Q1 pos: 40 -> 15.92518
-    ##     LOD increase:  0.489 
-    ## all pos: 40 10 -> 15.92518 49.31839 
-    ## LOD increase at this iteration:  0.81 
-    ## Iteration 2 
-    ##  Q1 pos: 15.92518 -> 15.92518
-    ##     LOD increase:  0 
-    ##  Q2 pos: 49.31839 -> 49.31839
-    ##     LOD increase:  0 
-    ## all pos: 15.92518 49.31839 -> 15.92518 49.31839 
-    ## LOD increase at this iteration:  0 
-    ## overall pos: 40 10 -> 15.92518 49.31839 
-    ## LOD increase overall:  0.81
-
     ## Warning in addpair(data, q[, 1], p, rqtl2.bin[[p]], maxit = 1e+06, tol = 0.2, : Dropping 31 individuals with missing phenotypes.
 
-    ## Scanning full model for chr LG19 and LG19 
-    ## Scanning add've model for chr LG19 and LG19 
-    ## Scanning full model for chr LG19 and LG24 
-    ## Scanning add've model for chr LG19 and LG24 
-    ## Scanning full model for chr LG24 and LG24 
-    ## Scanning add've model for chr LG24 and LG24
-
-    ## Warning in fitqtlengine(pheno = pheno, qtl = qtl, covar = covar, formula = formula, : Dropping 31 individuals with missing phenotypes.
-
-    ## pos: 56.70621 10 
-    ## Iteration 1 
-    ##  Q2 pos: 10 -> 34.78712
-    ##     LOD increase:  0.847 
-    ##  Q1 pos: 56.70621 -> 8.160178
-    ##     LOD increase:  1.324 
-    ## all pos: 56.70621 10 -> 8.160178 34.78712 
-    ## LOD increase at this iteration:  2.171 
-    ## Iteration 2 
-    ##  Q1 pos: 8.160178 -> 8.160178
-    ##     LOD increase:  0 
-    ##  Q2 pos: 34.78712 -> 38.08046
-    ##     LOD increase:  0.069 
-    ## all pos: 8.160178 34.78712 -> 8.160178 38.08046 
-    ## LOD increase at this iteration:  0.069 
-    ## Iteration 3 
-    ##  Q2 pos: 38.08046 -> 38.08046
-    ##     LOD increase:  0 
-    ##  Q1 pos: 8.160178 -> 8.160178
-    ##     LOD increase:  0 
-    ## all pos: 8.160178 38.08046 -> 8.160178 38.08046 
-    ## LOD increase at this iteration:  0 
-    ## overall pos: 56.70621 10 -> 8.160178 38.08046 
-    ## LOD increase overall:  2.24 
-    ## Scanning full model for chr LG13 and LG13 
-    ## Scanning add've model for chr LG13 and LG13 
-    ## Scanning full model for chr LG13 and LG24 
-    ## Scanning add've model for chr LG13 and LG24 
-    ## Scanning full model for chr LG24 and LG24 
-    ## Scanning add've model for chr LG24 and LG24
+    ## Warning in addpair(data, q[, 1], p, rqtl2.bin[[p]], maxit = 1e+06, tol = 0.2, : Dropping 31 individuals with missing phenotypes.
 
 ``` r
 for (i in 1:length(qtlpairs)){
@@ -1190,10 +900,10 @@ Anthocyanin QTL map
 ``` r
 qtldf<-qtldf_initial()
 for (i in 1:6) {
-  (qtls<-summary(scan1,perms=scan1perm,alpha=alp,lodcolumn=i)[,c(1:2,2+i)])
+  qtls<-summary(scan1,perms=scan1perm,alpha=alp,lodcolumn=i)[,c(1:2,2+i)]
   if(nrow(qtls)>0){
     for (j in 1:nrow(qtls)) {
-      (bay <-bayesint(scan1[,c(1:2,2+i)],chr=qtls$chr[j]))
+      bay <-bayesint(scan1[,c(1:2,2+i)],chr=qtls$chr[j])
       qtldf <- rbind(qtldf,
                      data.frame(
                        chr = qtls$chr[j],
@@ -1207,18 +917,8 @@ for (i in 1:6) {
   }
 }
 outfile<-file.path("results/basil_QTLs.anthocyanin.pdf")
-(mapthese<-paste0("LG",sort(unique(as.numeric(qtldf$chr)))))
-```
-
-    ## [1] "LG6"  "LG7"  "LG9"  "LG13" "LG14" "LG18"
-
-``` r
-(main<-paste0("Basil Genetic Map + QTLs for Anthocyanin (",paste0(mapthese,collapse = ","),")")) 
-```
-
-    ## [1] "Basil Genetic Map + QTLs for Anthocyanin (LG6,LG7,LG9,LG13,LG14,LG18)"
-
-``` r
+mapthese<-paste0("LG",sort(unique(as.numeric(qtldf$chr))))
+main<-paste0("Basil Genetic Map + QTLs for Anthocyanin (",paste0(mapthese,collapse = ","),")")
 setting<-modifyList(setting,list(outfile=outfile,mapthese=mapthese,main=main,qtldf=qtldf))
 do.call(lmv.linkage.plot,setting)
 ```
@@ -1239,7 +939,7 @@ for (i in 7:10) {
   qtls<-summary(scan1,perms=scan1perm,alpha=alp,lodcolumn=i)[,c(1:2,2+i)]
   if(nrow(qtls)>0){
     for (j in 1:nrow(qtls)) {
-      (bay <-bayesint(scan1[,c(1:2,2+i)],chr=qtls$chr[j]))
+      bay <-bayesint(scan1[,c(1:2,2+i)],chr=qtls$chr[j])
       qtldf <- rbind(qtldf,
                      data.frame(
                        chr = qtls$chr[j],
@@ -1253,23 +953,11 @@ for (i in 7:10) {
   }
 }
 i<-1
-(p<-phenames(data)[i+n])
-```
-
-    ## [1] "FOB3_bin"
-
-``` r
-(qtls<-summary(scan1.bin,perms=scan1perm.bin,format="tabByCol",alpha=alp,ci.function="bayesint")[[p]])
-```
-
-    ##             chr      pos ci.low  ci.high      lod
-    ## 26868      LG19 39.86291     30 47.09717 4.554812
-    ## cLG24.loc9 LG24  9.00000      0 21.00000 2.481463
-
-``` r
+p<-phenames(data)[i+n]
+qtls<-summary(scan1.bin,perms=scan1perm.bin,format="tabByCol",alpha=alp,ci.function="bayesint")[[p]]
 if(nrow(qtls)>0){
   for (j in 1:nrow(qtls)) {
-    (bay <-bayesint(scan1.bin[,c(1:2,2+i)],chr=qtls$chr[j]))
+    bay <-bayesint(scan1.bin[,c(1:2,2+i)],chr=qtls$chr[j])
     qtldf <- rbind(qtldf,
                    data.frame(
                      chr = qtls$chr[j],
@@ -1282,18 +970,8 @@ if(nrow(qtls)>0){
   }
 }
 outfile<-file.path("results/basil_QTLs.fusarium.pdf")
-(mapthese<-paste0("LG",sort(unique(as.numeric(qtldf$chr)))))
-```
-
-    ## [1] "LG10" "LG19" "LG24"
-
-``` r
-(main<-paste0("Basil Genetic Map + QTLs for Fusarium (",paste0(mapthese,collapse = ","),")")) 
-```
-
-    ## [1] "Basil Genetic Map + QTLs for Fusarium (LG10,LG19,LG24)"
-
-``` r
+mapthese<-paste0("LG",sort(unique(as.numeric(qtldf$chr))))
+main<-paste0("Basil Genetic Map + QTLs for Fusarium (",paste0(mapthese,collapse = ","),")")
 setting<-modifyList(setting,list(outfile=outfile,mapthese=mapthese,main=main))
 setting$qtldf<-qtldf
 do.call(lmv.linkage.plot,setting)
@@ -1313,17 +991,11 @@ Downy Mildew QTL map
 qtldf<-qtldf_initial()
 i<-2
 p<-phenames(data)[i+n]
-(qtls<-summary(scan1.bin,perms=scan1perm.bin,format="tabByCol",alpha=alp,ci.function="bayesint")[[p]])
-```
+qtls<-summary(scan1.bin,perms=scan1perm.bin,format="tabByCol",alpha=alp,ci.function="bayesint")[[p]]
 
-    ##             chr      pos ci.low   ci.high      lod
-    ## 234493     LG13 107.0502      6 115.44695 2.711296
-    ## cLG24.loc9 LG24   9.0000      0  25.99493 3.154514
-
-``` r
 if(nrow(qtls)>0){
   for (j in 1:nrow(qtls)) {
-    (bay <-bayesint(scan1.bin[,c(1:2,2+i)],chr=qtls$chr[j]))
+    bay <-bayesint(scan1.bin[,c(1:2,2+i)],chr=qtls$chr[j])
     qtldf <- rbind(qtldf,
                    data.frame(
                      chr = qtls$chr[j],
@@ -1336,18 +1008,8 @@ if(nrow(qtls)>0){
   }
 }
 outfile<-file.path("results/basil_QTLs.BDM.pdf")
-(mapthese<-paste0("LG",sort(unique(as.numeric(qtldf$chr)))))
-```
-
-    ## [1] "LG13" "LG24"
-
-``` r
-(main<-paste0("Basil Genetic Map + QTLs for Downy Mildew (",paste0(mapthese,collapse = ","),")")) 
-```
-
-    ## [1] "Basil Genetic Map + QTLs for Downy Mildew (LG13,LG24)"
-
-``` r
+mapthese<-paste0("LG",sort(unique(as.numeric(qtldf$chr))))
+main<-paste0("Basil Genetic Map + QTLs for Downy Mildew (",paste0(mapthese,collapse = ","),")")
 setting<-modifyList(setting,list(outfile=outfile,mapthese=mapthese,main=main))
 setting$qtldf<-qtldf
 do.call(lmv.linkage.plot,setting)
