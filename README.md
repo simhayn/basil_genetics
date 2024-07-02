@@ -12,7 +12,7 @@ Welcome to the Basil Genetic Mapping and QTL Analysis repository! This project f
 - [Contact](#contact)
 
 ## Overview
-This repository contains scripts and data for performing genetic mapping and QTL analysis in basil. The goal is to identify genetic regions associated with important traits in basil, such as disease resistance and red coloring.
+This repository contains code and data for performing genetic mapping and QTL analysis in basil. The goal is to identify genetic regions associated with important traits in basil, such as disease resistance and red coloring.
 
 ## Thesis Information
 This project was conducted as part of my master's thesis at Bar Ilan University. The research was aimed at advancing our understanding of the genetic basis of key traits in basil, with potential applications in breeding and agriculture.
@@ -28,14 +28,18 @@ The repository includes a markdown file of genetic mapping and QTL analysis. Her
 
 1. **Data Preprocessing** 
 
-2. **Genetic Mapping**
+2. **Genetic Map Construction**
 
-3. **QTL Analysis**
+3. **Map Evaluation**
+   
+4. **Exploratory Data Analysis**
 
-4. **Visualize Linkage Map**
+5. **QTL Analysis**
+
+6. **QTL Visualization on the Map**
 
 ## Data
-The fictive data used in this project include genotypic and phenotypic datasets for basil. These datasets are stored in the `data` directory. 
+The fictive data used in this project include genotypic and phenotypic datasets for basil. The original data is private.
 
 ## Contributing
 I welcome contributions to this project! If you have suggestions, bug reports, or improvements, please open an issue or submit a pull request.
