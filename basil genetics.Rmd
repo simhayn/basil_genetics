@@ -318,7 +318,7 @@ Perform genome scans to identify QTL
 
 ```{r}
 if (all(file.exists("genome_scans.Rdata","scan2_part1.Rdata","scan2_lod_part2.Rdata"))) {
-  message("Loading precomputed genome scans from genome_scans.Rdata to save time.")
+  message("Loading precomputed genome scans from genome_scans.Rdata, scan2_part1.Rdata and scan2_lod_part2.Rdata to save time.")
   load("genome_scans.Rdata")
   # Load the parts (scan2 is a large file so I split it into 2 parts)
   load("scan2_part1.Rdata")
@@ -413,7 +413,7 @@ Setting a QTL detection threshold according to permutation tests. The lower the 
 
 Scan for additional QTL after reducing the masking effect of QTL with major peaks.
 
-```{r}
+```{r warning=FALSE, include=FALSE,eval=TRUE}
 #normal #add additional QTL
 qtlist<-summary(scan1,perms=scan1perm,format="tabByCol",alpha=0.63,ci.function="bayesint")
 message("Calculating genoprob step= 2 cM")
@@ -448,9 +448,34 @@ Threshold colors
 thcol<-c('blue','green','red')
 ```
 
-Plot the LOD peaks, from the original scan and from the additional scan
+Plot LOD curves per phenotype, QTL peaks
 
-```{r}
+```{r,fig.width=8, fig.height=6, message=FALSE}
+for(i in 1:(length(phenames(data))-3)){
+  p<-phenames(data)[i]
+  plot(scan1,lodcolumn=i,main=p,ylab="LOD",bandcol="gray80",ylim=c(0,max(scan1[,2+i])+0.5),alternate.chrid = T)
+    abline(h=thresh1.hk[,i],lty='dotted',lwd=2,col=thcol)
+    for(j in 1:3){
+      if(thresh1.hk[j,i]/par('usr')[4]<1){
+        mtext(rownames(thresh1.hk)[j],side=4,font=2,adj=thresh1.hk[j,i]/(par('usr')[4]-0.2),col=thcol[j])
+      }
+    }
+}
+for(i in 1:2){
+  p<-phenames(data)[i+n]
+  plot(scan1.bin,lodcolumn=i,main=p,ylab="LOD",bandcol="gray80",ylim=c(0,max(scan1.bin[,2+i])+0.5),alternate.chrid = T)
+    abline(h=thresh2.em[,i],lty='dotted',lwd=2,col=thcol)
+    for(j in 1:3){
+      if(thresh2.em[j,i]/par('usr')[4]<1){
+        mtext(rownames(thresh2.em)[j],side=4,font=2,adj=thresh2.em[j,i]/(par('usr')[4]-0.2),col=thcol[j])
+      }
+    }
+}
+
+```
+
+```{r eval=FALSE, include=FALSE}
+#Plot the LOD peaks, from scanone by phenotype
 plot.sc<-function (x,bin=F,sc=scan1,thresh=thresh1.hk,LETTERs=T,l=1,mf=c(2,2),second=F,first=F){
   if (!second) par(mfrow=mf)
   for (i in x) {
@@ -468,9 +493,8 @@ plot.sc<-function (x,bin=F,sc=scan1,thresh=thresh1.hk,LETTERs=T,l=1,mf=c(2,2),se
 }
 ```
 
-Plot LOD score by phenotype
-
-```{r}
+```{r eval=FALSE, include=FALSE}
+#Plot LOD score by phenotype
 plot.sc(1:6)
 plot.sc(7:10,first=T)
 plot.sc(1,T,sc=scan1.bin,thresh=thresh2.em,second=T,l=5)
@@ -478,9 +502,8 @@ plot.sc(2,T,sc=scan1.bin,thresh=thresh2.em,LETTERs=F,first=T)
 plot.sc(11,LETTERs=F,second=T)
 ```
 
-Customized QTL plotting function, combining original scan and addqtl scan
-
-```{r}
+```{r eval=FALSE, include=FALSE}
+#Customized QTL plotting function, combining original scan and addqtl scan
 plotAddqtl<-function(x,bin=F,list=qtlist,aq=out.aq,thresh=thresh1.hk,mfrow=c(2,2),second=F,LETTERs=T,l=1){
   if(!second)par(mfrow=mfrow)
   par(cex.lab=1.5,cex.axis=1.3,cex.main=1.7,cex.sub=1.3)
@@ -501,9 +524,8 @@ plotAddqtl<-function(x,bin=F,list=qtlist,aq=out.aq,thresh=thresh1.hk,mfrow=c(2,2
 }
 ```
 
-Plot the QTL, LOD graphs
-
-```{r}
+```{r eval=FALSE, include=FALSE}
+#Plot the QTL, LOD graphs
 plotAddqtl(1:6,mfrow=c(2,3))
 plotAddqtl(7:10)
 plotAddqtl(1,T,qtlist.bin,out.aq.bin,thresh2.em,second=T,l=4)
@@ -511,9 +533,8 @@ plotAddqtl(1,T,qtlist.bin,out.aq.bin,thresh2.em,l=6)
 plotAddqtl(2,T,qtlist.bin,out.aq.bin,thresh2.em,LETTERs=F)
 ```
 
-Classify the phenotypes for the presence of joint interaction of markers.
-
-```{r}
+```{r include=FALSE}
+#Classify the phenotypes for the presence of joint interaction of markers.
 intpPhen<-vector();effpPhen<-vector()
 for (i in 1:n) {
   (sc1<-summary(scan1,perms=scan1perm,alpha=0.63,lodcolumn=i)[,c(1:2,2+i)])
@@ -533,7 +554,7 @@ for (i in 1:n) {
   }
 ```
 
-```{r}
+```{r warning=FALSE}
 options(warn=0)
 #normal
 qtlist<-summary(scan1,perms=scan1perm,format="tabByCol",alpha=0.95,ci.function="bayesint",pvalues=T)
@@ -619,9 +640,8 @@ qtldf.aq<-qtldf.aq%>%
 qtldf.aq
 ```
 
-Customized merged interaction plots
-
-```{r}
+```{r eval=FALSE, include=FALSE}
+#Customized merged interaction plots
 mergedIntp<-function(x=1,bin=F,sc=scan1,perm=scan1perm,rit.inx=NULL,mf=c(2,3),l=1,LETTERs=T,second=F,first=F){
   rit<-1 #legend on the right
   if (!second) par(mfrow=mf) #if plot is second then letter is continuous
@@ -649,15 +669,14 @@ mergedIntp<-function(x=1,bin=F,sc=scan1,perm=scan1perm,rit.inx=NULL,mf=c(2,3),l=
 }
 ```
 
-Plot marker interactions
-
-```{r}
+```{r eval=FALSE, include=FALSE}
+#Plot marker interactions
 data<-sim.geno(data,step=3)
 x<-(1:6)[1:6%in%find.pheno(data,intpPhen)]
 mergedIntp(x,rit.inx=c(3,6,8,12,15,21,22,26,35))
 ```
 
-```{r eval=FALSE}
+```{r eval=FALSE, include=FALSE}
 x<-(7:11)[7:11%in%find.pheno(data,intpPhen)]
 mergedIntp(x,first=T,rit.inx=1,mf=c(2,2))
 #binary

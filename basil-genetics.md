@@ -477,7 +477,7 @@ Perform genome scans to identify QTL
 
 ``` r
 if (all(file.exists("genome_scans.Rdata","scan2_part1.Rdata","scan2_lod_part2.Rdata"))) {
-  message("Loading precomputed genome scans from genome_scans.Rdata to save time.")
+  message("Loading precomputed genome scans from genome_scans.Rdata, scan2_part1.Rdata and scan2_lod_part2.Rdata to save time.")
   load("genome_scans.Rdata")
   # Load the parts (scan2 is a large file so I split it into 2 parts)
   load("scan2_part1.Rdata")
@@ -563,7 +563,7 @@ if (all(file.exists("genome_scans.Rdata","scan2_part1.Rdata","scan2_lod_part2.Rd
 }
 ```
 
-    ## Loading precomputed genome scans from genome_scans.Rdata to save time.
+    ## Loading precomputed genome scans from genome_scans.Rdata, scan2_part1.Rdata and scan2_lod_part2.Rdata to save time.
 
 Setting a QTL detection threshold according to permutation tests. The
 lower the precentage (5%), the better significance of the QTL.
@@ -591,569 +591,43 @@ lower the precentage (5%), the better significance of the QTL.
 Scan for additional QTL after reducing the masking effect of QTL with
 major peaks.
 
-``` r
-#normal #add additional QTL
-qtlist<-summary(scan1,perms=scan1perm,format="tabByCol",alpha=0.63,ci.function="bayesint")
-message("Calculating genoprob step= 2 cM")
-```
-
-    ## Calculating genoprob step= 2 cM
-
-``` r
-data<-calc.genoprob(data,2,map.function="kosambi")
-out.aq<-list();rqtl<-list()
-for(i in 1:n){
-  if(length(qtlist[[i]][,1])>0){
-    p<-phenames(data)[i]
-    qtlobj<-makeqtl(data,qtlist[[i]][,1],qtlist[[i]][,2],what="prob")
-    rqtl[[p]]<-refineqtl(data,p,qtlobj,method="hk")
-    out.aq[[p]]<-addqtl(data,qtlist[[i]][,1],p,rqtl[[p]],method="hk",verbose=T)
-  }
-}
-```
-
-    ## pos: 36.14001 33.80107 56.70621 42 15.68374 
-    ## Iteration 1 
-    ##  Q1 pos: 36.14001 -> 32
-    ##     LOD increase:  0.031 
-    ##  Q5 pos: 15.68374 -> 15.68374
-    ##     LOD increase:  0 
-    ##  Q2 pos: 33.80107 -> 3.423914
-    ##     LOD increase:  0.906 
-    ##  Q4 pos: 42 -> 12
-    ##     LOD increase:  1.969 
-    ##  Q3 pos: 56.70621 -> 56.30351
-    ##     LOD increase:  0.015 
-    ## all pos: 36.14001 33.80107 56.70621 42 15.68374 -> 32 3.423914 56.30351 12 15.68374 
-    ## LOD increase at this iteration:  2.921 
-    ## Iteration 2 
-    ##  Q3 pos: 56.30351 -> 56.30351
-    ##     LOD increase:  0 
-    ##  Q2 pos: 3.423914 -> 24
-    ##     LOD increase:  0.101 
-    ##  Q1 pos: 32 -> 12
-    ##     LOD increase:  0.179 
-    ##  Q4 pos: 12 -> 12
-    ##     LOD increase:  0 
-    ##  Q5 pos: 15.68374 -> 15.68374
-    ##     LOD increase:  0 
-    ## all pos: 32 3.423914 56.30351 12 15.68374 -> 12 24 56.30351 12 15.68374 
-    ## LOD increase at this iteration:  0.28 
-    ## Iteration 3 
-    ##  Q5 pos: 15.68374 -> 15.68374
-    ##     LOD increase:  0 
-    ##  Q2 pos: 24 -> 3.423914
-    ##     LOD increase:  0.144 
-    ##  Q4 pos: 12 -> 12
-    ##     LOD increase:  0 
-    ##  Q1 pos: 12 -> 10.14508
-    ##     LOD increase:  0.034 
-    ##  Q3 pos: 56.30351 -> 56.30351
-    ##     LOD increase:  0 
-    ## all pos: 12 24 56.30351 12 15.68374 -> 10.14508 3.423914 56.30351 12 15.68374 
-    ## LOD increase at this iteration:  0.177 
-    ## Iteration 4 
-    ##  Q3 pos: 56.30351 -> 56.30351
-    ##     LOD increase:  0 
-    ##  Q2 pos: 3.423914 -> 3.423914
-    ##     LOD increase:  0 
-    ##  Q1 pos: 10.14508 -> 10.14508
-    ##     LOD increase:  0 
-    ##  Q4 pos: 12 -> 12
-    ##     LOD increase:  0 
-    ##  Q5 pos: 15.68374 -> 15.68374
-    ##     LOD increase:  0 
-    ## all pos: 10.14508 3.423914 56.30351 12 15.68374 -> 10.14508 3.423914 56.30351 12 15.68374 
-    ## LOD increase at this iteration:  0 
-    ## overall pos: 36.14001 33.80107 56.70621 42 15.68374 -> 10.14508 3.423914 56.30351 12 15.68374 
-    ## LOD increase overall:  3.379 
-    ## Scanning chr LG6 
-    ## Scanning chr LG7 
-    ## Scanning chr LG13 
-    ## Scanning chr LG14 
-    ## Scanning chr LG18 
-    ## pos: 36.14001 33.80107 56.70621 38 15.68374 
-    ## Iteration 1 
-    ##  Q2 pos: 33.80107 -> 3.423914
-    ##     LOD increase:  0.451 
-    ##  Q4 pos: 38 -> 12
-    ##     LOD increase:  2.099 
-    ##  Q3 pos: 56.70621 -> 56.30351
-    ##     LOD increase:  0.013 
-    ##  Q5 pos: 15.68374 -> 15.68374
-    ##     LOD increase:  0 
-    ##  Q1 pos: 36.14001 -> 10.14508
-    ##     LOD increase:  0.726 
-    ## all pos: 36.14001 33.80107 56.70621 38 15.68374 -> 10.14508 3.423914 56.30351 12 15.68374 
-    ## LOD increase at this iteration:  3.288 
-    ## Iteration 2 
-    ##  Q1 pos: 10.14508 -> 10.14508
-    ##     LOD increase:  0 
-    ##  Q2 pos: 3.423914 -> 26
-    ##     LOD increase:  0.321 
-    ##  Q4 pos: 12 -> 12
-    ##     LOD increase:  0 
-    ##  Q5 pos: 15.68374 -> 15.68374
-    ##     LOD increase:  0 
-    ##  Q3 pos: 56.30351 -> 56.30351
-    ##     LOD increase:  0 
-    ## all pos: 10.14508 3.423914 56.30351 12 15.68374 -> 10.14508 26 56.30351 12 15.68374 
-    ## LOD increase at this iteration:  0.321 
-    ## Iteration 3 
-    ##  Q3 pos: 56.30351 -> 56.30351
-    ##     LOD increase:  0 
-    ##  Q5 pos: 15.68374 -> 15.68374
-    ##     LOD increase:  0 
-    ##  Q1 pos: 10.14508 -> 12
-    ##     LOD increase:  0.001 
-    ##  Q2 pos: 26 -> 26
-    ##     LOD increase:  0 
-    ##  Q4 pos: 12 -> 12
-    ##     LOD increase:  0 
-    ## all pos: 10.14508 26 56.30351 12 15.68374 -> 12 26 56.30351 12 15.68374 
-    ## LOD increase at this iteration:  0.001 
-    ## Iteration 4 
-    ##  Q4 pos: 12 -> 12
-    ##     LOD increase:  0 
-    ##  Q1 pos: 12 -> 12
-    ##     LOD increase:  0 
-    ##  Q2 pos: 26 -> 26
-    ##     LOD increase:  0 
-    ##  Q5 pos: 15.68374 -> 15.68374
-    ##     LOD increase:  0 
-    ##  Q3 pos: 56.30351 -> 56.30351
-    ##     LOD increase:  0 
-    ## all pos: 12 26 56.30351 12 15.68374 -> 12 26 56.30351 12 15.68374 
-    ## LOD increase at this iteration:  0 
-    ## overall pos: 36.14001 33.80107 56.70621 38 15.68374 -> 12 26 56.30351 12 15.68374 
-    ## LOD increase overall:  3.61 
-    ## Scanning chr LG6 
-    ## Scanning chr LG7 
-    ## Scanning chr LG13 
-    ## Scanning chr LG14 
-    ## Scanning chr LG18 
-    ## pos: 36.14001 33.80107 8 56.70621 38 15.68374 
-    ## Iteration 1 
-    ##  Q4 pos: 56.70621 -> 56.30351
-    ##     LOD increase:  0.028 
-    ##  Q3 pos: 8 -> 13.61983
-    ##     LOD increase:  0.13 
-    ##  Q2 pos: 33.80107 -> 3.423914
-    ##     LOD increase:  0.635 
-    ##  Q6 pos: 15.68374 -> 15.68374
-    ##     LOD increase:  0 
-    ##  Q1 pos: 36.14001 -> 30
-    ##     LOD increase:  0.128 
-    ##  Q5 pos: 38 -> 10
-    ##     LOD increase:  1.901 
-    ## all pos: 36.14001 33.80107 8 56.70621 38 15.68374 -> 30 3.423914 13.61983 56.30351 10 15.68374 
-    ## LOD increase at this iteration:  2.822 
-    ## Iteration 2 
-    ##  Q5 pos: 10 -> 10
-    ##     LOD increase:  0 
-    ##  Q4 pos: 56.30351 -> 56.30351
-    ##     LOD increase:  0 
-    ##  Q3 pos: 13.61983 -> 7.368317
-    ##     LOD increase:  0.015 
-    ##  Q6 pos: 15.68374 -> 15.68374
-    ##     LOD increase:  0 
-    ##  Q1 pos: 30 -> 10.14508
-    ##     LOD increase:  0.347 
-    ##  Q2 pos: 3.423914 -> 24
-    ##     LOD increase:  0.285 
-    ## all pos: 30 3.423914 13.61983 56.30351 10 15.68374 -> 10.14508 24 7.368317 56.30351 10 15.68374 
-    ## LOD increase at this iteration:  0.647 
-    ## Iteration 3 
-    ##  Q2 pos: 24 -> 24
-    ##     LOD increase:  0 
-    ##  Q5 pos: 10 -> 12
-    ##     LOD increase:  0.095 
-    ##  Q1 pos: 10.14508 -> 12
-    ##     LOD increase:  0.019 
-    ##  Q6 pos: 15.68374 -> 15.68374
-    ##     LOD increase:  0 
-    ##  Q3 pos: 7.368317 -> 52.5869
-    ##     LOD increase:  0.304 
-    ##  Q4 pos: 56.30351 -> 56.30351
-    ##     LOD increase:  0 
-    ## all pos: 10.14508 24 7.368317 56.30351 10 15.68374 -> 12 24 52.5869 56.30351 12 15.68374 
-    ## LOD increase at this iteration:  0.418 
-    ## Iteration 4 
-    ##  Q4 pos: 56.30351 -> 56.30351
-    ##     LOD increase:  0 
-    ##  Q1 pos: 12 -> 10.14508
-    ##     LOD increase:  0.042 
-    ##  Q6 pos: 15.68374 -> 15.68374
-    ##     LOD increase:  0 
-    ##  Q2 pos: 24 -> 24
-    ##     LOD increase:  0 
-    ##  Q3 pos: 52.5869 -> 52.5869
-    ##     LOD increase:  0 
-    ##  Q5 pos: 12 -> 12
-    ##     LOD increase:  0 
-    ## all pos: 12 24 52.5869 56.30351 12 15.68374 -> 10.14508 24 52.5869 56.30351 12 15.68374 
-    ## LOD increase at this iteration:  0.042 
-    ## Iteration 5 
-    ##  Q5 pos: 12 -> 12
-    ##     LOD increase:  0 
-    ##  Q6 pos: 15.68374 -> 15.68374
-    ##     LOD increase:  0 
-    ##  Q2 pos: 24 -> 24
-    ##     LOD increase:  0 
-    ##  Q4 pos: 56.30351 -> 56.30351
-    ##     LOD increase:  0 
-    ##  Q1 pos: 10.14508 -> 10.14508
-    ##     LOD increase:  0 
-    ##  Q3 pos: 52.5869 -> 52.5869
-    ##     LOD increase:  0 
-    ## all pos: 10.14508 24 52.5869 56.30351 12 15.68374 -> 10.14508 24 52.5869 56.30351 12 15.68374 
-    ## LOD increase at this iteration:  0 
-    ## overall pos: 36.14001 33.80107 8 56.70621 38 15.68374 -> 10.14508 24 52.5869 56.30351 12 15.68374 
-    ## LOD increase overall:  3.929 
-    ## Scanning chr LG6 
-    ## Scanning chr LG7 
-    ## Scanning chr LG9 
-    ## Scanning chr LG13 
-    ## Scanning chr LG14 
-    ## Scanning chr LG18 
-    ## pos: 36.14001 56.70621 36 
-    ## Iteration 1 
-    ##  Q1 pos: 36.14001 -> 16
-    ##     LOD increase:  0.401 
-    ##  Q2 pos: 56.70621 -> 56.30351
-    ##     LOD increase:  0.034 
-    ##  Q3 pos: 36 -> 10
-    ##     LOD increase:  1.21 
-    ## all pos: 36.14001 56.70621 36 -> 16 56.30351 10 
-    ## LOD increase at this iteration:  1.646 
-    ## Iteration 2 
-    ##  Q3 pos: 10 -> 10
-    ##     LOD increase:  0 
-    ##  Q1 pos: 16 -> 10.14508
-    ##     LOD increase:  0.281 
-    ##  Q2 pos: 56.30351 -> 56.30351
-    ##     LOD increase:  0 
-    ## all pos: 16 56.30351 10 -> 10.14508 56.30351 10 
-    ## LOD increase at this iteration:  0.281 
-    ## Iteration 3 
-    ##  Q2 pos: 56.30351 -> 56.30351
-    ##     LOD increase:  0 
-    ##  Q1 pos: 10.14508 -> 10.14508
-    ##     LOD increase:  0 
-    ##  Q3 pos: 10 -> 10
-    ##     LOD increase:  0 
-    ## all pos: 10.14508 56.30351 10 -> 10.14508 56.30351 10 
-    ## LOD increase at this iteration:  0 
-    ## overall pos: 36.14001 56.70621 36 -> 10.14508 56.30351 10 
-    ## LOD increase overall:  1.926 
-    ## Scanning chr LG6 
-    ## Scanning chr LG13 
-    ## Scanning chr LG14 
-    ## pos: 56.70621 
-    ## Iteration 1 
-    ##  Q1 pos: 56.70621 -> 56.30351
-    ##     LOD increase:  0.021 
-    ## all pos: 56.70621 -> 56.30351 
-    ## LOD increase at this iteration:  0.021 
-    ## Iteration 2 
-    ##  Q1 pos: 56.30351 -> 56.30351
-    ##     LOD increase:  0 
-    ## all pos: 56.30351 -> 56.30351 
-    ## LOD increase at this iteration:  0 
-    ## overall pos: 56.70621 -> 56.30351 
-    ## LOD increase overall:  0.021 
-    ## Scanning chr LG13 
-    ## pos: 56.70621 
-    ## Iteration 1 
-    ##  Q1 pos: 56.70621 -> 56.30351
-    ##     LOD increase:  0.031 
-    ## all pos: 56.70621 -> 56.30351 
-    ## LOD increase at this iteration:  0.031 
-    ## Iteration 2 
-    ##  Q1 pos: 56.30351 -> 56.30351
-    ##     LOD increase:  0 
-    ## all pos: 56.30351 -> 56.30351 
-    ## LOD increase at this iteration:  0 
-    ## overall pos: 56.70621 -> 56.30351 
-    ## LOD increase overall:  0.031 
-    ## Scanning chr LG13 
-    ## pos: 40 
-    ## Iteration 1 
-    ##  Q1 pos: 40 -> 15.92518
-    ##     LOD increase:  0.242 
-    ## all pos: 40 -> 15.92518 
-    ## LOD increase at this iteration:  0.242 
-    ## Iteration 2 
-    ##  Q1 pos: 15.92518 -> 15.92518
-    ##     LOD increase:  0 
-    ## all pos: 15.92518 -> 15.92518 
-    ## LOD increase at this iteration:  0 
-    ## overall pos: 40 -> 15.92518 
-    ## LOD increase overall:  0.242
-
-    ## Warning in addqtl(data, qtlist[[i]][, 1], p, rqtl[[p]], method = "hk", verbose = T): Dropping 31 individuals with missing phenotypes.
-
-    ## Scanning chr LG19 
-    ## pos: 30 40 12 
-    ## Iteration 1 
-    ##  Q1 pos: 30 -> 38.0848
-    ##     LOD increase:  0.106 
-    ##  Q2 pos: 40 -> 28
-    ##     LOD increase:  0.21 
-    ##  Q3 pos: 12 -> 0
-    ##     LOD increase:  0.2 
-    ## all pos: 30 40 12 -> 38.0848 28 0 
-    ## LOD increase at this iteration:  0.516 
-    ## Iteration 2 
-    ##  Q3 pos: 0 -> 0
-    ##     LOD increase:  0 
-    ##  Q1 pos: 38.0848 -> 12.44735
-    ##     LOD increase:  0.193 
-    ##  Q2 pos: 28 -> 12
-    ##     LOD increase:  0.067 
-    ## all pos: 38.0848 28 0 -> 12.44735 12 0 
-    ## LOD increase at this iteration:  0.26 
-    ## Iteration 3 
-    ##  Q2 pos: 12 -> 12
-    ##     LOD increase:  0 
-    ##  Q3 pos: 0 -> 0
-    ##     LOD increase:  0 
-    ##  Q1 pos: 12.44735 -> 3.563067
-    ##     LOD increase:  0.049 
-    ## all pos: 12.44735 12 0 -> 3.563067 12 0 
-    ## LOD increase at this iteration:  0.049 
-    ## Iteration 4 
-    ##  Q1 pos: 3.563067 -> 3.563067
-    ##     LOD increase:  0 
-    ##  Q3 pos: 0 -> 0
-    ##     LOD increase:  0 
-    ##  Q2 pos: 12 -> 12
-    ##     LOD increase:  0 
-    ## all pos: 3.563067 12 0 -> 3.563067 12 0 
-    ## LOD increase at this iteration:  0 
-    ## overall pos: 30 40 12 -> 3.563067 12 0 
-    ## LOD increase overall:  0.825
-
-    ## Warning in addqtl(data, qtlist[[i]][, 1], p, rqtl[[p]], method = "hk", verbose = T): Dropping 31 individuals with missing phenotypes.
-
-    ## Scanning chr LG10 
-    ## Scanning chr LG19 
-    ## Scanning chr LG24 
-    ## pos: 40 
-    ## Iteration 1 
-    ##  Q1 pos: 40 -> 15.92518
-    ##     LOD increase:  0.387 
-    ## all pos: 40 -> 15.92518 
-    ## LOD increase at this iteration:  0.387 
-    ## Iteration 2 
-    ##  Q1 pos: 15.92518 -> 15.92518
-    ##     LOD increase:  0 
-    ## all pos: 15.92518 -> 15.92518 
-    ## LOD increase at this iteration:  0 
-    ## overall pos: 40 -> 15.92518 
-    ## LOD increase overall:  0.387
-
-    ## Warning in addqtl(data, qtlist[[i]][, 1], p, rqtl[[p]], method = "hk", verbose = T): Dropping 31 individuals with missing phenotypes.
-
-    ## Scanning chr LG19
-
-``` r
-#binary #add QTL
-qtlist.bin<-summary(scan1.bin,perms=scan1perm.bin,format="tabByCol",alpha=0.63,ci.function="bayesint")
-data<-calc.genoprob(data,3,map.function="kosambi")
-out.aq.bin<-list();rqtl.bin<-list()
-for(i in 1:2){
-  if(length(qtlist.bin[[i]][,1])>0){
-    p<-phenames(data)[i+n]
-    qtlobj.bin<-makeqtl(data,qtlist.bin[[i]][,1],qtlist.bin[[i]][,2],what="prob")
-    rqtl.bin[[p]]<-refineqtl(data,p,qtlobj.bin,method="hk",model="binary")
-    out.aq.bin[[p]]<-addqtl(data,qtlist.bin[[i]][,1],p,rqtl.bin[[p]],maxit=1e+9,tol=0.05,method="hk",model="binary",verbose=T)
-    #maxit controls the trade-off between computational resources and the precision of the optimization algorithm. Increasing maxit may improve accuracy but also increases computation time.
-  }
-}
-```
-
-    ## pos: 39 9 
-    ## Iteration 1 
-    ##  Q1 pos: 39 -> 12
-    ##     LOD increase:  0.555 
-    ##  Q2 pos: 9 -> 0
-    ##     LOD increase:  0.34 
-    ## all pos: 39 9 -> 12 0 
-    ## LOD increase at this iteration:  0.895 
-    ## Iteration 2 
-    ##  Q2 pos: 0 -> 0
-    ##     LOD increase:  0 
-    ##  Q1 pos: 12 -> 12
-    ##     LOD increase:  0 
-    ## all pos: 12 0 -> 12 0 
-    ## LOD increase at this iteration:  0 
-    ## overall pos: 39 9 -> 12 0 
-    ## LOD increase overall:  0.895
-
-    ## Warning in addqtl(data, qtlist.bin[[i]][, 1], p, rqtl.bin[[p]], maxit = 1e+09, : Dropping 31 individuals with missing phenotypes.
-
-    ## Scanning chr LG19 
-    ## Scanning chr LG24 
-    ## pos: 56.70621 9 
-    ## Iteration 1 
-    ##  Q1 pos: 56.70621 -> 8.160178
-    ##     LOD increase:  1.426 
-    ##  Q2 pos: 9 -> 38.08046
-    ##     LOD increase:  0.81 
-    ## all pos: 56.70621 9 -> 8.160178 38.08046 
-    ## LOD increase at this iteration:  2.236 
-    ## Iteration 2 
-    ##  Q2 pos: 38.08046 -> 38.08046
-    ##     LOD increase:  0 
-    ##  Q1 pos: 8.160178 -> 8.160178
-    ##     LOD increase:  0 
-    ## all pos: 8.160178 38.08046 -> 8.160178 38.08046 
-    ## LOD increase at this iteration:  0 
-    ## overall pos: 56.70621 9 -> 8.160178 38.08046 
-    ## LOD increase overall:  2.236 
-    ## Scanning chr LG13 
-    ## Scanning chr LG24
-
 Threshold colors
 
 ``` r
 thcol<-c('blue','green','red')
 ```
 
-Plot the LOD peaks, from the original scan and from the additional scan
+Plot LOD curves per phenotype, QTL peaks
 
 ``` r
-plot.sc<-function (x,bin=F,sc=scan1,thresh=thresh1.hk,LETTERs=T,l=1,mf=c(2,2),second=F,first=F){
-  if (!second) par(mfrow=mf)
-  for (i in x) {
-    p<-phenames(data)[i];if(bin)p<-phenames(data)[i+n]
-    plot(sc,lodcolumn=i,main=p,ylab="LOD",bandcol="gray80",ylim=c(0,max(sc[,2+i])+0.5),alternate.chrid = T)
-    abline(h=thresh[,i],lty='dotted',lwd=2,col=thcol)
-    for(j in 1:3){
-      if(thresh[j,i]/par('usr')[4]<1){
-        mtext(rownames(thresh)[j],side=4,font=2,adj=thresh[j,i]/(par('usr')[4]-0.2),col=thcol[j])
-      }
-    }
-    if (LETTERs) mtext(LETTERS[l],adj=0,cex=1.2);l<-l+1;if(l>6)l<-1
-  }
-  if (first==F) par(mfrow=c(1,1))
-}
-```
-
-Plot LOD score by phenotype
-
-``` r
-plot.sc(1:6)
-```
-
-![](basil-genetics_files/figure-gfm/unnamed-chunk-39-1.png)<!-- -->![](basil-genetics_files/figure-gfm/unnamed-chunk-39-2.png)<!-- -->
-
-``` r
-plot.sc(7:10,first=T)
-```
-
-![](basil-genetics_files/figure-gfm/unnamed-chunk-39-3.png)<!-- -->
-
-``` r
-plot.sc(1,T,sc=scan1.bin,thresh=thresh2.em,second=T,l=5)
-```
-
-![](basil-genetics_files/figure-gfm/unnamed-chunk-39-4.png)<!-- -->
-
-``` r
-plot.sc(2,T,sc=scan1.bin,thresh=thresh2.em,LETTERs=F,first=T)
-plot.sc(11,LETTERs=F,second=T)
-```
-
-![](basil-genetics_files/figure-gfm/unnamed-chunk-39-5.png)<!-- -->
-
-Customized QTL plotting function, combining original scan and addqtl
-scan
-
-``` r
-plotAddqtl<-function(x,bin=F,list=qtlist,aq=out.aq,thresh=thresh1.hk,mfrow=c(2,2),second=F,LETTERs=T,l=1){
-  if(!second)par(mfrow=mfrow)
-  par(cex.lab=1.5,cex.axis=1.3,cex.main=1.7,cex.sub=1.3)
-  for(i in x){
-    if(length(list[[i]][,1])>0){
-      p<-phenames(data)[i];if(bin)p<-phenames(data)[i+n]
-      plot(aq[[p]],alternate.chrid=nrow(list[[p]])>3,ylab="LOD")
-      abline(h=thresh[,i],lty='dotted',lwd=2,col=thcol)
-      for(j in 1:3){
-        if(thresh[j,i]/par('usr')[4]<1){
-          mtext(rownames(thresh)[j],cex=0.9,font=2,adj=thresh[j,i]/(par('usr')[4]-0.1),side=4,col=thcol[j])}
-      }
-      title(p)
-      if(nrow(list[[p]])==1)title(sub=list[[p]][,1])
-      if (LETTERs) mtext(LETTERS[l],adj=0,cex=1.3);l<-l+1;if(l>6)l<-1
-    }
-  }
-}
-```
-
-Plot the QTL, LOD graphs
-
-``` r
-plotAddqtl(1:6,mfrow=c(2,3))
-```
-
-![](basil-genetics_files/figure-gfm/unnamed-chunk-41-1.png)<!-- -->
-
-``` r
-plotAddqtl(7:10)
-plotAddqtl(1,T,qtlist.bin,out.aq.bin,thresh2.em,second=T,l=4)
-```
-
-![](basil-genetics_files/figure-gfm/unnamed-chunk-41-2.png)<!-- -->
-
-``` r
-plotAddqtl(1,T,qtlist.bin,out.aq.bin,thresh2.em,l=6)
-plotAddqtl(2,T,qtlist.bin,out.aq.bin,thresh2.em,LETTERs=F)
-```
-
-![](basil-genetics_files/figure-gfm/unnamed-chunk-41-3.png)<!-- -->![](basil-genetics_files/figure-gfm/unnamed-chunk-41-4.png)<!-- -->
-
-Classify the phenotypes for the presence of joint interaction of
-markers.
-
-``` r
-intpPhen<-vector();effpPhen<-vector()
-for (i in 1:n) {
-  (sc1<-summary(scan1,perms=scan1perm,alpha=0.63,lodcolumn=i)[,c(1:2,2+i)])
+for(i in 1:(length(phenames(data))-3)){
   p<-phenames(data)[i]
-  cat(nrow(sc1),"QTL in",p,"\n")
-  if(nrow(sc1)>1) intpPhen<-c(intpPhen,p)
-  if(nrow(sc1)==1) effpPhen<-c(effpPhen,p)
-  }
+  plot(scan1,lodcolumn=i,main=p,ylab="LOD",bandcol="gray80",ylim=c(0,max(scan1[,2+i])+0.5),alternate.chrid = T)
+    abline(h=thresh1.hk[,i],lty='dotted',lwd=2,col=thcol)
+    for(j in 1:3){
+      if(thresh1.hk[j,i]/par('usr')[4]<1){
+        mtext(rownames(thresh1.hk)[j],side=4,font=2,adj=thresh1.hk[j,i]/(par('usr')[4]-0.2),col=thcol[j])
+      }
+    }
+}
 ```
 
-    ## 5 QTL in AFF 
-    ## 5 QTL in AFS 
-    ## 6 QTL in AFL 
-    ## 3 QTL in AG 
-    ## 1 QTL in AYS 
-    ## 1 QTL in AYL 
-    ## 0 QTL in FOB1 
-    ## 1 QTL in FOB2 
-    ## 3 QTL in FOB3 
-    ## 1 QTL in F_AUDPC 
-    ## 0 QTL in Cold
+![](basil-genetics_files/figure-gfm/unnamed-chunk-38-1.png)<!-- -->![](basil-genetics_files/figure-gfm/unnamed-chunk-38-2.png)<!-- -->![](basil-genetics_files/figure-gfm/unnamed-chunk-38-3.png)<!-- -->![](basil-genetics_files/figure-gfm/unnamed-chunk-38-4.png)<!-- -->![](basil-genetics_files/figure-gfm/unnamed-chunk-38-5.png)<!-- -->![](basil-genetics_files/figure-gfm/unnamed-chunk-38-6.png)<!-- -->![](basil-genetics_files/figure-gfm/unnamed-chunk-38-7.png)<!-- -->![](basil-genetics_files/figure-gfm/unnamed-chunk-38-8.png)<!-- -->![](basil-genetics_files/figure-gfm/unnamed-chunk-38-9.png)<!-- -->![](basil-genetics_files/figure-gfm/unnamed-chunk-38-10.png)<!-- -->![](basil-genetics_files/figure-gfm/unnamed-chunk-38-11.png)<!-- -->
 
 ``` r
-  #binary
-  intpPhen.bin<-vector();effpPhen.bin<-vector()
-  for (i in 1:2) {
-    (sc1<-summary(scan1.bin,perms=scan1perm.bin,alpha=0.63,lodcolumn=i)[,c(1:2,2+i)])
-    p<-phenames(data)[i+n]
-    cat(nrow(sc1),"QTL in",p,"\n")
-    if(nrow(sc1)>1) intpPhen.bin<-c(intpPhen.bin,p)
-    if(nrow(sc1)==1) effpPhen.bin<-c(effpPhen.bin,p)
-  }
+for(i in 1:2){
+  p<-phenames(data)[i+n]
+  plot(scan1.bin,lodcolumn=i,main=p,ylab="LOD",bandcol="gray80",ylim=c(0,max(scan1.bin[,2+i])+0.5),alternate.chrid = T)
+    abline(h=thresh2.em[,i],lty='dotted',lwd=2,col=thcol)
+    for(j in 1:3){
+      if(thresh2.em[j,i]/par('usr')[4]<1){
+        mtext(rownames(thresh2.em)[j],side=4,font=2,adj=thresh2.em[j,i]/(par('usr')[4]-0.2),col=thcol[j])
+      }
+    }
+}
 ```
 
-    ## 2 QTL in FOB3_bin 
-    ## 2 QTL in BDM
+![](basil-genetics_files/figure-gfm/unnamed-chunk-38-12.png)<!-- -->![](basil-genetics_files/figure-gfm/unnamed-chunk-38-13.png)<!-- -->
 
 ``` r
 options(warn=0)
@@ -1176,51 +650,6 @@ qtlist<-summary(scan1,perms=scan1perm,format="tabByCol",alpha=0.95,ci.function="
       }
     }
   }
-```
-
-    ## Warning in summary.scanone(out.aq[[p]], format = "tabByCol", perms =
-    ## scan1perm[, : Column names in scanone input do not match those in perms input.
-
-    ## Warning in summary.scanone(out.aq[[p]], perms = scan1perm[, p], alpha = 0.63):
-    ## Column names in scanone input do not match those in perms input.
-
-    ## Warning in summary.scanone(out.aq[[p]], format = "tabByCol", perms =
-    ## scan1perm[, : Column names in scanone input do not match those in perms input.
-
-    ## Warning in summary.scanone(out.aq[[p]], perms = scan1perm[, p], alpha = 0.63):
-    ## Column names in scanone input do not match those in perms input.
-
-    ## Warning in summary.scanone(out.aq[[p]], format = "tabByCol", perms =
-    ## scan1perm[, : Column names in scanone input do not match those in perms input.
-
-    ## Warning in summary.scanone(out.aq[[p]], format = "tabByCol", perms =
-    ## scan1perm[, : Column names in scanone input do not match those in perms input.
-
-    ## Warning in summary.scanone(out.aq[[p]], perms = scan1perm[, p], alpha = 0.63):
-    ## Column names in scanone input do not match those in perms input.
-
-    ## Warning in summary.scanone(out.aq[[p]], format = "tabByCol", perms =
-    ## scan1perm[, : Column names in scanone input do not match those in perms input.
-
-    ## Warning in summary.scanone(out.aq[[p]], format = "tabByCol", perms =
-    ## scan1perm[, : Column names in scanone input do not match those in perms input.
-
-    ## Warning in summary.scanone(out.aq[[p]], format = "tabByCol", perms =
-    ## scan1perm[, : Column names in scanone input do not match those in perms input.
-
-    ## Warning in summary.scanone(out.aq[[p]], perms = scan1perm[, p], alpha = 0.63):
-    ## Column names in scanone input do not match those in perms input.
-
-    ## Warning in summary.scanone(out.aq[[p]], format = "tabByCol", perms =
-    ## scan1perm[, : Column names in scanone input do not match those in perms input.
-
-    ## Warning in summary.scanone(out.aq[[p]], format = "tabByCol", perms =
-    ## scan1perm[, : Column names in scanone input do not match those in perms input.
-
-    ## Warning in summary.scanone(out.aq[[p]], perms = scan1perm[, p], alpha = 0.63):
-    ## Column names in scanone input do not match those in perms input.
-
-``` r
   for (i in 1:length(qtlist)){
     if(colnames(qtlist[[i]])[1]!="Trait"){
       qtlist[[i]]<-cbind.data.frame(Trait=names(qtlist[i]),qtlist[[i]])
@@ -1252,15 +681,6 @@ qtlist<-summary(scan1,perms=scan1perm,format="tabByCol",alpha=0.95,ci.function="
       }
     }
   }
-```
-
-    ## Warning in summary.scanone(out.aq.bin[[p]], perms = scan1perm.bin[, p], : Column
-    ## names in scanone input do not match those in perms input.
-
-    ## Warning in summary.scanone(out.aq.bin[[p]], perms = scan1perm.bin[, p], : Column
-    ## names in scanone input do not match those in perms input.
-
-``` r
   for (i in 1:length(qtlist)){
     qtlist[[i]]<-cbind.data.frame(Trait=names(qtlist[i]),qtlist[[i]])
   }
@@ -1423,55 +843,6 @@ qtldf.aq
     ## 61  LG13_m22723-LG13_m152483   LG13_m152483   0.316*
     ## 62 LG19_m163917-LG19_m176482   LG19_m164757    0.741
     ## 63 LG24_m112367-LG24_m115022   LG24_m117386    0.13*
-
-Customized merged interaction plots
-
-``` r
-mergedIntp<-function(x=1,bin=F,sc=scan1,perm=scan1perm,rit.inx=NULL,mf=c(2,3),l=1,LETTERs=T,second=F,first=F){
-  rit<-1 #legend on the right
-  if (!second) par(mfrow=mf) #if plot is second then letter is continuous
-  for (i in x) {
-    (sc1<-summary(sc,perm=perm,alpha=0.63,lodcolumn=i)[,c(1:2,2+i)])
-    (r<-nrow(sc1))
-    sorted<-sc1%>%arrange(desc(across(3)))
-    (mn<-find.marker(data,chr=sorted[,1],pos=sorted[,2]))
-    for(j in 1:(r-1)){
-      for(k in (j+1):r){
-        if (bin) i<-i+n
-        effectplot(data,pheno.col=i,mname1=mn[j],mname2=mn[k],main="",ylab=paste("Ave. phenotype:",phenames(data)[i]),xlab=paste0(sorted[k,1],"_m",mn[k]),add.legend = F)
-        if(rit%in%rit.inx) lpos<-"topright" else lpos<-"topleft"
-        legend(lpos,c("AA","AB","BB"),lty=1,pch=1,col=c("black","red","blue"),bty="n",inset=c(0.01,0))
-        a<-par("usr")
-        x.leg <- a[1] * 0.05 + a[2] * 0.75
-        y.leg <- a[4] - diff(a[3:4]) * 0.05
-        if(rit%in%rit.inx) tpos<-2 else tpos<-NULL
-        text(x.leg,y.leg,pos=tpos,paste0(sorted[j,1],"_m",mn[j]))
-        if (LETTERs)mtext(LETTERS[l],adj=0,cex=1.1);l<-l+1;if(l>6)l<-1
-        rit<-rit+1}
-    }
-  }
-  if (!first) par(mfrow=c(1,1))
-}
-```
-
-Plot marker interactions
-
-``` r
-data<-sim.geno(data,step=3)
-x<-(1:6)[1:6%in%find.pheno(data,intpPhen)]
-mergedIntp(x,rit.inx=c(3,6,8,12,15,21,22,26,35))
-```
-
-![](basil-genetics_files/figure-gfm/unnamed-chunk-46-1.png)<!-- -->![](basil-genetics_files/figure-gfm/unnamed-chunk-46-2.png)<!-- -->![](basil-genetics_files/figure-gfm/unnamed-chunk-46-3.png)<!-- -->![](basil-genetics_files/figure-gfm/unnamed-chunk-46-4.png)<!-- -->![](basil-genetics_files/figure-gfm/unnamed-chunk-46-5.png)<!-- -->![](basil-genetics_files/figure-gfm/unnamed-chunk-46-6.png)<!-- -->![](basil-genetics_files/figure-gfm/unnamed-chunk-46-7.png)<!-- -->
-
-``` r
-x<-(7:11)[7:11%in%find.pheno(data,intpPhen)]
-mergedIntp(x,first=T,rit.inx=1,mf=c(2,2))
-#binary
-x<-((12:13)[12:13%in%find.pheno(data,intpPhen.bin)])-n
-mergedIntp(x[1],T,scan1.bin,scan1perm.bin,second=T,l=2)
-mergedIntp(x[2],T,scan1.bin,scan1perm.bin,LETTERs=F)
-```
 
 QTL pairs summary
 
@@ -1732,20 +1103,13 @@ for(i in 1:2){
 
     ## pos: 56.70621 10 
     ## Iteration 1 
-    ##  Q2 pos: 10 -> 34.78712
-    ##     LOD increase:  0.847 
     ##  Q1 pos: 56.70621 -> 8.160178
-    ##     LOD increase:  1.324 
-    ## all pos: 56.70621 10 -> 8.160178 34.78712 
-    ## LOD increase at this iteration:  2.171 
+    ##     LOD increase:  1.426 
+    ##  Q2 pos: 10 -> 38.08046
+    ##     LOD increase:  0.815 
+    ## all pos: 56.70621 10 -> 8.160178 38.08046 
+    ## LOD increase at this iteration:  2.24 
     ## Iteration 2 
-    ##  Q1 pos: 8.160178 -> 8.160178
-    ##     LOD increase:  0 
-    ##  Q2 pos: 34.78712 -> 38.08046
-    ##     LOD increase:  0.069 
-    ## all pos: 8.160178 34.78712 -> 8.160178 38.08046 
-    ## LOD increase at this iteration:  0.069 
-    ## Iteration 3 
     ##  Q2 pos: 38.08046 -> 38.08046
     ##     LOD increase:  0 
     ##  Q1 pos: 8.160178 -> 8.160178
