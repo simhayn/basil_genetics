@@ -1103,13 +1103,20 @@ for(i in 1:2){
 
     ## pos: 56.70621 10 
     ## Iteration 1 
+    ##  Q2 pos: 10 -> 34.78712
+    ##     LOD increase:  0.847 
     ##  Q1 pos: 56.70621 -> 8.160178
-    ##     LOD increase:  1.426 
-    ##  Q2 pos: 10 -> 38.08046
-    ##     LOD increase:  0.815 
-    ## all pos: 56.70621 10 -> 8.160178 38.08046 
-    ## LOD increase at this iteration:  2.24 
+    ##     LOD increase:  1.324 
+    ## all pos: 56.70621 10 -> 8.160178 34.78712 
+    ## LOD increase at this iteration:  2.171 
     ## Iteration 2 
+    ##  Q1 pos: 8.160178 -> 8.160178
+    ##     LOD increase:  0 
+    ##  Q2 pos: 34.78712 -> 38.08046
+    ##     LOD increase:  0.069 
+    ## all pos: 8.160178 34.78712 -> 8.160178 38.08046 
+    ## LOD increase at this iteration:  0.069 
+    ## Iteration 3 
     ##  Q2 pos: 38.08046 -> 38.08046
     ##     LOD increase:  0 
     ##  Q1 pos: 8.160178 -> 8.160178

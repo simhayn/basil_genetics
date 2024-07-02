@@ -624,7 +624,7 @@ qtlist<-summary(scan1,perms=scan1perm,format="tabByCol",alpha=0.95,ci.function="
 
 QTL summary as dataframe for final report. QTL at alp= 0.99 and sig \*\*\* levels
 
-```{r}
+```{r paged.print=TRUE}
 su<-1-summary(data)$missing.phe
 qtldf.aq<-qtldf.aq%>%
   mutate("Len of LG"=round(chrlen(data)[chr],1),.after=chr)%>%
