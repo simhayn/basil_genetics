@@ -5,7 +5,6 @@ Welcome to the Basil Genetic Mapping and QTL Analysis repository! This project f
 ## Table of Contents
 - [Overview](#overview)
 - [Thesis Information](#thesis-information)
-- [Installation](#installation)
 - [Usage](#usage)
 - [Data](#data)
 - [Contributing](#contributing)
@@ -24,35 +23,16 @@ This project was conducted as part of my master's thesis at Bar Ilan University.
 - **Year**: 2021
 - **Traits Studied**: Downy Mildew and Fusarium resistance, Cold tolerance, Anthocyanin accumulation (Red Color Intensity) on Leaves, Stems and Flowers, in Young and mature plants in Greenhouse or Field environments. 
 
-## Installation
-**Clone the repository:**
-    ```bash
-    git clone https://github.com/simhayn/basil_mapping.git
-    cd basil_mapping
-    ```
 ## Usage
-The repository includes separate scripts for genetic mapping and QTL analysis. Here are the main steps:
+The repository includes a markdown file of genetic mapping and QTL analysis. Here are the main steps:
 
-1. **Data Preprocessing:**
-    - Data preprocessing was performed in Excel, resulting in the creation of the `raw_data.csv` file, which contains the processed data ready for analysis. 
+1. **Data Preprocessing** 
 
-2. **Genetic Mapping:**
-    - Perform genetic mapping using the `genetic_mapping.R` script.
-    ```r
-    source("scripts/genetic_mapping.R")
-    ```
+2. **Genetic Mapping**
 
-3. **QTL Analysis:**
-    - Conduct QTL analysis using the `qtl_analysis.R` script.
-    ```r
-    source("scripts/qtl_analysis.R")
-    ```
+3. **QTL Analysis**
 
-4. **Visualize Linkage Map:**
-    - Plot linkage map with the detected QTLs using the `linkage_map_view.R` script.
-    ```r
-    source("scripts/linkage_map_view.R")
-    ```
+4. **Visualize Linkage Map**
 
 ## Data
 The fictive data used in this project include genotypic and phenotypic datasets for basil. These datasets are stored in the `data` directory. 
