@@ -24,7 +24,7 @@ This project was conducted as part of my master's thesis at Bar Ilan University.
 - **Traits Studied**: Downy Mildew and Fusarium resistance, Cold tolerance, Anthocyanin accumulation (Red Color Intensity) on Leaves, Stems and Flowers, in Young and mature plants in Greenhouse or Field environments. 
 
 ## Usage
-The repository includes a markdown file [basil-genetics.md](basil-genetics.md) of genetic mapping and QTL analysis. The results are found in the folder[results](results). Here are the main steps:
+The repository includes a markdown file [basil-genetics.md](basil-genetics.md) of genetic mapping and QTL analysis. The results are found in the folder [results](results). Here is the outline:
 
 1. **Data Preprocessing** 
 
