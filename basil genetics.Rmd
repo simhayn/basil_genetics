@@ -355,12 +355,10 @@ if (all(file.exists("genome_scans.Rdata","scan2_part1.Rdata","scan2_lod_part2.Rd
   #genome scan for Single-QTL
   scan1.bin<-scanone(data,pheno.col=c(12:13),method="em",model="binary")
   #permutation test
-  scan1perm.bin1<-scanone(data,pheno.col=c(12:13),method="em",model="binary",n.perm=1000,n.cluster=2)
+  ##scan1perm.bin1<-scanone(data,pheno.col=c(12:13),method="em",model="binary",n.perm=1000,n.cluster=2)
   operm <- vector("list", 100)
   for(i in 1:100){operm[[i]]<-scanone(data,pheno.col=c(12:13),method="em",model="binary",n.perm=10,n.cluster=2)}
-   scan1perm.bin1<-do.call("rbind", operm)
-   
-   save(scan1,scan1.bin,scan1perm,scan1perm.bin,scan2.bin,scan2perm,scan2perm.bin,file="genome_scans.Rdata")
+   scan1perm.bin<-do.call("rbind", operm)
    
    ###ScanTwo###
    #normal #scan genome for Two-QTL model
@@ -400,7 +398,15 @@ if (all(file.exists("genome_scans.Rdata","scan2_part1.Rdata","scan2_lod_part2.Rd
   for(i in 1:100 ){operm2[[i]]<-scantwo(data,pheno.col=c(12:13),method="em",model="binary",n.perm=5,n.cluster=2)}
    for(i in 101:200 ){operm2[[i]]<-scantwo(data,pheno.col=c(12:13),method="em", model="binary",n.perm=5,n.cluster=2)}
    scan2perm.bin<-do.call("rbind", operm2[1:200])
-}
+   
+      save(scan1,scan1.bin,scan1perm,scan1perm.bin,scan2.bin,scan2perm,scan2perm.bin,file="genome_scans.Rdata")
+      scan2.partial<-scan2
+      scan2.partial$lod<-head(scan2$lod,319)
+      lod_part2<-tail(scan2$lod,620-319)
+      save(scan2.partial,file="scan2_part1.Rdata")
+      save(lod_part2,file="scan2_lod_part2.Rdata")
+
+   }
 ```
 
 Setting a QTL detection threshold according to permutation tests. The lower the precentage (5%), the better significance of the QTL.
@@ -764,11 +770,11 @@ if(nrow(qtlpairs[[i]])>0 && names(qtlpairs[[i]])[1]!="Trait"){
   }
 }
 qtlpairsdf<-do.call(rbind.data.frame,c(qtlpairs,make.row.names=F))
-#interacting QTL
+##interacting QTL detected for AFL
 qtlpairsdf<-c(qtlpairsdf,thr=m[qtlpairsdf[,1],])
 ```
 
-No interactive QTL pair was found in the add pair scan.
+One interactive QTL pair was found in the add pair scan for AFL phenotype.
 
 # Linkage Map view
 
@@ -826,7 +832,8 @@ for (i in 1:6) {
 outfile<-file.path("results/basil_QTLs.anthocyanin.pdf")
 mapthese<-paste0("LG",sort(unique(as.numeric(qtldf$chr))))
 main<-paste0("Basil Genetic Map + QTLs for Anthocyanin (",paste0(mapthese,collapse = ","),")")
-setting<-modifyList(setting,list(outfile=outfile,mapthese=mapthese,main=main,qtldf=qtldf))
+setting<-modifyList(setting,list(outfile=outfile,mapthese=mapthese,main=main))
+setting$qtldf<-qtldf
 do.call(lmv.linkage.plot,setting)
 ```
 
@@ -853,20 +860,22 @@ for (i in 7:10) {
 }
 i<-1
 p<-phenames(data)[i+n]
-qtls<-summary(scan1.bin,perms=scan1perm.bin,format="tabByCol",alpha=alp,ci.function="bayesint")[[p]]
-if(nrow(qtls)>0){
-  for (j in 1:nrow(qtls)) {
-    bay <-bayesint(scan1.bin[,c(1:2,2+i)],chr=qtls$chr[j])
-    qtldf <- rbind(qtldf,
-                   data.frame(
-                     chr = qtls$chr[j],
-                     qtl = colnames(bay)[3],
-                     so = bay$pos[1],
-                     si = bay$pos[2],
-                     ei = bay$pos[2],
-                     eo = bay$pos[3],
-                     col=colorlist[7]))
-  }
+qtls<-summary(scan1.bin,perms=scan1perm.bin,format="tabByCol",alpha=alp,ci.function="bayesint")
+if(nrow(qtls[[p]])>0){
+for (j in 1:(nrow(qtls[[p]])+1)) {
+    if(j==3){
+      qtls[[p]]<-rbind(qtls[[p]],cbind(s.aq[[p]][,-3],`ci.low`=bayesint(out.aq.bin[[p]],s.aq[[p]][,1])[1,2],`ci.high`=bayesint(out.aq.bin[[p]],s.aq[[p]][,1])[3,2],`lod`=s.aq[[p]][,3]))
+    }
+    qtldf<-rbind(qtldf,
+                 data.frame(
+                   chr = qtls[[p]]$chr[j],
+                   qtl = p,
+                   so = qtls[[p]]$`ci.low`[j],
+                   si = qtls[[p]]$pos[j],
+                   ei = qtls[[p]]$pos[j],
+                   eo = qtls[[p]]$`ci.high`[j],
+                   col=colorlist[7]))
+}
 }
 outfile<-file.path("results/basil_QTLs.fusarium.pdf")
 mapthese<-paste0("LG",sort(unique(as.numeric(qtldf$chr))))
@@ -882,21 +891,21 @@ Downy Mildew QTL map
 qtldf<-qtldf_initial()
 i<-2
 p<-phenames(data)[i+n]
-qtls<-summary(scan1.bin,perms=scan1perm.bin,format="tabByCol",alpha=alp,ci.function="bayesint")[[p]]
-
-if(nrow(qtls)>0){
-  for (j in 1:nrow(qtls)) {
-    bay <-bayesint(scan1.bin[,c(1:2,2+i)],chr=qtls$chr[j])
-    qtldf <- rbind(qtldf,
-                   data.frame(
-                     chr = qtls$chr[j],
-                     qtl = colnames(bay)[3],
-                     so = bay$pos[1],
-                     si = bay$pos[2],
-                     ei = bay$pos[2],
-                     eo = bay$pos[3],
-                     col=colorlist[7]))
-  }
+if(nrow(qtls[[p]])>0){
+for (j in 1:(nrow(qtls[[p]])+1)) {
+    if(j==3){
+      qtls[[p]]<-rbind(qtls[[p]],cbind(s.aq[[p]][,-3],`ci.low`=bayesint(out.aq.bin[[p]],s.aq[[p]][,1])[1,2],`ci.high`=bayesint(out.aq.bin[[p]],s.aq[[p]][,1])[3,2],`lod`=s.aq[[p]][,3]))
+    }
+    qtldf<-rbind(qtldf,
+                 data.frame(
+                   chr = qtls[[p]]$chr[j],
+                   qtl = p,
+                   so = qtls[[p]]$`ci.low`[j],
+                   si = qtls[[p]]$pos[j],
+                   ei = qtls[[p]]$pos[j],
+                   eo = qtls[[p]]$`ci.high`[j],
+                   col=colorlist[7]))
+}
 }
 outfile<-file.path("results/basil_QTLs.BDM.pdf")
 mapthese<-paste0("LG",sort(unique(as.numeric(qtldf$chr))))
@@ -907,3 +916,9 @@ do.call(lmv.linkage.plot,setting)
 ```
 
 The pdf files are in the results folder.
+
+There are some matching chromosomes for each phenotypes' group. For example, the fusarium group is mainly on LG25.
+
+The Anthocyanin group is mainly on LG19 where there's also BDM resistance locus. This is an interesting finding. It's worth checking out the markers on this position, align them to the genome and find out what this locus is responible for, if there is a connection between anthocyanin and downy mildew resistance. The phenotypes' correlation showed no connection though.
+
+Thanks for reading my project, please share your thoughts with me!

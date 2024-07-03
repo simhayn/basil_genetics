@@ -477,9 +477,9 @@ lower the precentage (5%), the better significance of the QTL.
 
     ## LOD thresholds (1000 permutations)
     ##      AFF  AFS  AFL   AG  AYS  AYL FOB1 FOB2 FOB3 F_AUDPC Cold
-    ## 63% 2.25 2.23 2.25 2.24 2.26 2.24 2.24 2.24 2.24    2.24 2.22
-    ## 10% 3.31 3.32 3.32 3.36 3.45 3.33 3.32 3.37 3.38    3.35 3.26
-    ## 5%  3.74 3.68 3.69 3.71 3.77 3.80 3.70 3.77 3.70    3.76 3.62
+    ## 63% 2.24 2.24 2.22 2.21 2.24 2.22 2.24 2.22 2.25    2.24 2.26
+    ## 10% 3.30 3.29 3.28 3.26 3.31 3.35 3.40 3.38 3.28    3.36 3.33
+    ## 5%  3.66 3.65 3.66 3.63 3.66 3.65 3.71 3.74 3.64    3.75 3.67
 
 ``` r
 (thresh2.em<-summary(scan1perm.bin,alpha=c(0.63,0.1,0.05)))
@@ -487,9 +487,9 @@ lower the precentage (5%), the better significance of the QTL.
 
     ## LOD thresholds (1000 permutations)
     ##     FOB3_bin  BDM
-    ## 63%     2.23 2.25
-    ## 10%     3.26 3.26
-    ## 5%      3.71 3.62
+    ## 63%     2.21 2.26
+    ## 10%     3.29 3.40
+    ## 5%      3.54 3.88
 
 Scan for additional QTL after reducing the masking effect of QTL with
 major peaks.
@@ -619,134 +619,126 @@ qtldf.aq<-qtldf.aq%>%
 qtldf.aq
 ```
 
-    ##       Trait No. Inds/% phenotyped QTL's LG Len of LG Len of QTL   pos lod
-    ## 1       AFF        149 ind / 100%      LG6      36.1       29.0  56.1 2.8
-    ## 2       AFF        149 ind / 100%      LG7      33.8       57.2  48.0 2.6
-    ## 3       AFF        149 ind / 100%      LG9      52.6       41.1   8.2 1.9
-    ## 4       AFF        149 ind / 100%     LG10      43.9       32.6  45.5 1.8
-    ## 5       AFF        149 ind / 100%     LG13      56.7       82.0  81.3 2.5
-    ## 6       AFF        149 ind / 100%     LG14      58.7       24.0  42.0 2.9
-    ## 7       AFF        149 ind / 100%     LG16      41.1       77.1   0.0 1.8
-    ## 8       AFF        149 ind / 100%     LG18      15.7       22.0  17.6 3.1
-    ## 9       AFF        149 ind / 100%     LG14      58.7       58.7  56.0 1.9
-    ## 10      AFS        149 ind / 100%      LG6      36.1       44.9  56.5 2.3
-    ## 11      AFS        149 ind / 100%      LG7      33.8       51.6  48.0 2.7
-    ## 12      AFS        149 ind / 100%     LG10      43.9       28.6  45.5 2.1
-    ## 13      AFS        149 ind / 100%     LG13      56.7       81.9  81.3 2.5
-    ## 14      AFS        149 ind / 100%     LG14      58.7       26.0  38.0 3.1
-    ## 15      AFS        149 ind / 100%     LG16      41.1       77.1   0.0 1.7
-    ## 16      AFS        149 ind / 100%     LG18      15.7       22.0  17.6 3.3
-    ## 17      AFS        149 ind / 100%     LG20      60.7       86.3  86.0 2.0
-    ## 18      AFS        149 ind / 100%     LG14      58.7       58.7  56.0 2.1
-    ## 19      AFL        149 ind / 100%      LG6      36.1       16.5  56.1 2.8
-    ## 20      AFL        149 ind / 100%      LG7      33.8       18.6  56.0 2.8
-    ## 21      AFL        149 ind / 100%      LG9      52.6       14.0   8.2 2.3
-    ## 22      AFL        149 ind / 100%     LG10      43.9       45.1  45.5 1.9
-    ## 23      AFL        149 ind / 100%     LG13      56.7       80.2  80.0 2.5
-    ## 24      AFL        149 ind / 100%     LG14      58.7       26.0  38.0 2.7
-    ## 25      AFL        149 ind / 100%     LG18      15.7       24.0  17.6 2.8
-    ## 26       AG        149 ind / 100%      LG6      36.1       41.5  56.1 2.3
-    ## 27       AG        149 ind / 100%      LG7      33.8       57.2  56.0 2.0
-    ## 28       AG        149 ind / 100%      LG9      52.6       41.1   8.0 2.2
-    ## 29       AG        149 ind / 100%     LG11      56.6       20.0   3.0 2.0
-    ## 30       AG        149 ind / 100%     LG13      56.7       49.4  99.5 2.5
-    ## 31       AG        149 ind / 100%     LG14      58.7       26.0  36.0 2.5
-    ## 32       AG        149 ind / 100%      LG6      36.1       26.0   8.0 2.0
-    ## 33      AYS        149 ind / 100%      LG6      36.1       44.9  56.1 2.1
-    ## 34      AYS        149 ind / 100%      LG9      52.6       41.1   8.0 1.9
-    ## 35      AYS        149 ind / 100%     LG13      56.7       79.0  76.0 2.4
-    ## 36      AYL        149 ind / 100%      LG6      36.1       56.5  56.1 1.8
-    ## 37      AYL        149 ind / 100%      LG7      33.8       57.2  45.8 2.1
-    ## 38      AYL        149 ind / 100%      LG9      52.6       41.1   6.5 1.9
-    ## 39      AYL        149 ind / 100%     LG13      56.7       89.4  76.0 2.3
-    ## 40     FOB1       117 ind / 78.5%     LG19     114.3       33.8  41.1 1.9
-    ## 41     FOB1       117 ind / 78.5%     LG22      77.1       31.1  62.0 2.1
-    ## 42     FOB2       118 ind / 79.2%     LG13      56.7       94.3  99.5 1.9
-    ## 43     FOB2       118 ind / 79.2%     LG19     114.3       39.8  40.0 2.7
-    ## 44     FOB2       118 ind / 79.2%     LG19     114.3       85.7  28.0 2.2
-    ## 45     FOB3       118 ind / 79.2%      LG6      36.1       40.0  17.7 2.0
-    ## 46     FOB3       118 ind / 79.2%     LG10      43.9       21.5  30.4 2.6
-    ## 47     FOB3       118 ind / 79.2%     LG16      41.1       64.0  22.0 1.7
-    ## 48     FOB3       118 ind / 79.2%     LG19     114.3       31.8  40.0 3.7
-    ## 49     FOB3       118 ind / 79.2%     LG24      49.3       24.0  12.0 2.4
-    ## 50  F_AUDPC       118 ind / 79.2%     LG13      56.7      110.3 100.0 1.7
-    ## 51  F_AUDPC       118 ind / 79.2%     LG19     114.3       31.8  40.0 3.2
-    ## 52  F_AUDPC       118 ind / 79.2%     LG19     114.3       94.5  26.0 2.0
-    ## 53     Cold        149 ind / 100%     LG15      20.8       27.2  16.0 2.0
-    ## 54 FOB3_bin       118 ind / 79.2%      LG6      36.1       56.5  17.7 2.1
-    ## 55 FOB3_bin       118 ind / 79.2%     LG10      43.9       26.7  30.4 1.9
-    ## 56 FOB3_bin       118 ind / 79.2%     LG14      58.7       60.7  57.8 1.9
-    ## 57 FOB3_bin       118 ind / 79.2%     LG16      41.1       55.3  21.0 1.8
-    ## 58 FOB3_bin       118 ind / 79.2%     LG19     114.3       17.1  39.9 4.6
-    ## 59 FOB3_bin       118 ind / 79.2%     LG24      49.3       21.0   9.0 2.5
-    ## 60      BDM        149 ind / 100%      LG6      36.1       42.0  12.4 1.8
-    ## 61      BDM        149 ind / 100%     LG13      56.7      109.4 107.1 2.7
-    ## 62      BDM        149 ind / 100%     LG19     114.3       23.5  42.2 2.1
-    ## 63      BDM        149 ind / 100%     LG24      49.3       26.0   9.0 3.2
+    ##       Trait No. Inds/% phenotyped QTL's LG Len of LG Len of QTL  pos lod
+    ## 1       AFF        149 ind / 100%     LG13      56.7       28.6 56.3 2.8
+    ## 2       AFF        149 ind / 100%     LG14      58.7       57.2 12.0 2.6
+    ## 3       AFF        149 ind / 100%     LG16      41.1       41.1 32.9 1.9
+    ## 4       AFF        149 ind / 100%     LG17      46.6       32.0  1.1 1.9
+    ## 5       AFF        149 ind / 100%     LG19     114.3       80.0 34.2 2.5
+    ## 6       AFF        149 ind / 100%     LG20      60.7       26.0 18.0 2.9
+    ## 7       AFF        149 ind / 100%     LG22      77.1       77.1 77.1 1.8
+    ## 8       AFF        149 ind / 100%     LG24      49.3       22.0 31.7 3.1
+    ## 9       AFS        149 ind / 100%     LG13      56.7       45.1 56.7 2.3
+    ## 10      AFS        149 ind / 100%     LG14      58.7       52.4 12.0 2.7
+    ## 11      AFS        149 ind / 100%     LG17      46.6       28.0  1.1 2.1
+    ## 12      AFS        149 ind / 100%     LG19     114.3       82.0 34.2 2.5
+    ## 13      AFS        149 ind / 100%     LG20      60.7       26.0 24.0 3.1
+    ## 14      AFS        149 ind / 100%     LG24      49.3       22.0 31.7 3.3
+    ## 15      AFS        149 ind / 100%     LG26      86.3       86.3  0.0 2.0
+    ## 16      AFL        149 ind / 100%     LG13      56.7       17.1 56.3 2.8
+    ## 17      AFL        149 ind / 100%     LG14      58.7       18.0  4.0 2.7
+    ## 18      AFL        149 ind / 100%     LG16      41.1       15.1 32.9 2.3
+    ## 19      AFL        149 ind / 100%     LG17      46.6       46.0  1.1 1.9
+    ## 20      AFL        149 ind / 100%     LG19     114.3       80.8 36.0 2.5
+    ## 21      AFL        149 ind / 100%     LG20      60.7       26.0 18.0 2.7
+    ## 22      AFL        149 ind / 100%     LG24      49.3       22.0 31.7 2.8
+    ## 23       AG        149 ind / 100%      LG2      34.4       22.4 31.4 2.0
+    ## 24       AG        149 ind / 100%     LG13      56.7       41.7 56.3 2.3
+    ## 25       AG        149 ind / 100%     LG14      58.7       58.0  4.0 1.9
+    ## 26       AG        149 ind / 100%     LG16      41.1       41.1 32.9 2.2
+    ## 27       AG        149 ind / 100%     LG19     114.3       48.0 15.9 2.5
+    ## 28       AG        149 ind / 100%     LG20      60.7       26.0 24.0 2.4
+    ## 29      AYS        149 ind / 100%     LG13      56.7       45.1 56.3 2.1
+    ## 30      AYS        149 ind / 100%     LG16      41.1       41.1 34.0 1.9
+    ## 31      AYS        149 ind / 100%     LG19     114.3       79.6 40.0 2.4
+    ## 32      AYL        149 ind / 100%     LG13      56.7       56.7 56.3 1.8
+    ## 33      AYL        149 ind / 100%     LG14      58.7       57.2 12.8 2.2
+    ## 34      AYL        149 ind / 100%     LG16      41.1       17.1 34.6 1.9
+    ## 35      AYL        149 ind / 100%     LG19     114.3       88.0 38.0 2.4
+    ## 36     FOB1       117 ind / 78.5%      LG4      64.0       28.0  2.0 2.1
+    ## 37     FOB1       117 ind / 78.5%     LG25      47.8       34.0  7.9 1.9
+    ## 38     FOB2       118 ind / 79.2%     LG19     114.3       94.0 15.9 1.9
+    ## 39     FOB2       118 ind / 79.2%     LG25      47.8       40.0  6.6 2.6
+    ## 40     FOB3       118 ind / 79.2%      LG6      36.1       24.0 24.0 2.3
+    ## 41     FOB3       118 ind / 79.2%     LG13      56.7       40.0 17.8 2.0
+    ## 42     FOB3       118 ind / 79.2%     LG17      46.6       22.9 16.2 2.6
+    ## 43     FOB3       118 ind / 79.2%     LG22      77.1       65.1 56.0 1.7
+    ## 44     FOB3       118 ind / 79.2%     LG25      47.8       32.0  6.6 3.6
+    ## 45  F_AUDPC       118 ind / 79.2%     LG25      47.8       32.0  6.6 3.1
+    ## 46     Cold        149 ind / 100%     LG21      40.9       26.1 24.0 2.0
+    ## 47 FOB3_bin       118 ind / 79.2%      LG6      36.1       22.0 27.0 2.5
+    ## 48 FOB3_bin       118 ind / 79.2%      LG9      52.6       39.0 51.0 1.8
+    ## 49 FOB3_bin       118 ind / 79.2%     LG13      56.7       56.7 17.8 2.1
+    ## 50 FOB3_bin       118 ind / 79.2%     LG17      46.6       27.0 16.2 1.9
+    ## 51 FOB3_bin       118 ind / 79.2%     LG20      60.7       60.7  3.0 1.9
+    ## 52 FOB3_bin       118 ind / 79.2%     LG22      77.1       54.0 57.0 1.8
+    ## 53 FOB3_bin       118 ind / 79.2%     LG25      47.8       17.3  6.6 4.5
+    ## 54 FOB3_bin       118 ind / 79.2%     LG25      47.8       22.8 21.0 3.0
+    ## 55      BDM        149 ind / 100%      LG6      36.1       26.0 27.0 3.1
+    ## 56      BDM        149 ind / 100%     LG13      56.7       42.0 12.4 1.8
+    ## 57      BDM        149 ind / 100%     LG19     114.3      108.0  8.4 2.7
+    ## 58      BDM        149 ind / 100%     LG25      47.8       23.5 14.9 2.1
+    ## 59      BDM        149 ind / 100%      LG6      36.1       13.9 10.1 2.4
     ##             Flanking markers Central marker     Pval
-    ## 1      LG6_m51714-LG6_m34544     LG6_m34544   0.239*
-    ## 2    LG7_m170952-LG7_m217861    LG7_m217861   0.342*
-    ## 3    LG9_m148870-LG9_m233623    LG9_m207796    0.849
-    ## 4  LG10_m126321-LG10_m254187   LG10_m254187    0.877
-    ## 5  LG13_m256334-LG13_m152483   LG13_m152483   0.443*
-    ## 6  LG14_m180209-LG14_m226669   LG14_m120084   0.219*
-    ## 7     LG16_m98366-LG16_m1644    LG16_m98366    0.904
-    ## 8   LG18_m119483-LG18_m50269    LG18_m50269   0.154*
-    ## 9    LG14_m187879-LG14_m2633    LG14_m83713    0.863
-    ## 10    LG6_m249118-LG6_m34544     LG6_m34544   0.601*
-    ## 11   LG7_m213456-LG7_m217861    LG7_m217861   0.326*
-    ## 12 LG10_m153546-LG10_m254187   LG10_m254187    0.747
-    ## 13 LG13_m208332-LG13_m152483   LG13_m152483   0.441*
-    ## 14 LG14_m180209-LG14_m226669   LG14_m120084    0.16*
-    ## 15    LG16_m98366-LG16_m1644    LG16_m98366    0.939
-    ## 16  LG18_m119483-LG18_m50269    LG18_m50269   0.103*
-    ## 17 LG20_m213579-LG20_m112128   LG20_m112128    0.812
-    ## 18   LG14_m187879-LG14_m2633    LG14_m83713    0.729
-    ## 19     LG6_m34544-LG6_m34544     LG6_m34544   0.261*
-    ## 20   LG7_m217861-LG7_m217861    LG7_m217861   0.269*
-    ## 21    LG9_m148870-LG9_m74935    LG9_m207796   0.586*
-    ## 22 LG10_m128007-LG10_m254187   LG10_m254187    0.873
-    ## 23    LG13_m727-LG13_m152483   LG13_m152483    0.44*
-    ## 24 LG14_m180209-LG14_m226669   LG14_m120084   0.289*
-    ## 25  LG18_m203249-LG18_m50269    LG18_m50269   0.261*
-    ## 26    LG6_m219262-LG6_m34544     LG6_m34544   0.604*
-    ## 27   LG7_m170952-LG7_m217861    LG7_m217861    0.841
-    ## 28   LG9_m148870-LG9_m233623    LG9_m207796    0.667
-    ## 29 LG11_m170544-LG11_m203219    LG11_m82354    0.791
-    ## 30 LG13_m152483-LG13_m152483   LG13_m152483   0.445*
-    ## 31  LG14_m180209-LG14_m81839   LG14_m105316   0.463*
-    ## 32    LG6_m104199-LG6_m51714    LG6_m118896    0.827
-    ## 33    LG6_m249118-LG6_m34544     LG6_m34544    0.753
-    ## 34   LG9_m148870-LG9_m233623    LG9_m207796    0.845
-    ## 35    LG13_m727-LG13_m152483   LG13_m152483   0.537*
-    ## 36    LG6_m104199-LG6_m34544     LG6_m34544    0.918
-    ## 37   LG7_m170952-LG7_m217861    LG7_m217861    0.701
-    ## 38   LG9_m148870-LG9_m233623    LG9_m207796    0.847
-    ## 39    LG13_m727-LG13_m152483   LG13_m152483   0.551*
-    ## 40  LG19_m62803-LG19_m176482   LG19_m164757    0.867
-    ## 41 LG22_m155729-LG22_m213924   LG22_m159568    0.714
-    ## 42  LG13_m84559-LG13_m152483   LG13_m152483    0.856
-    ## 43 LG19_m234493-LG19_m176482   LG19_m164757   0.324*
-    ## 44    LG19_m62803-LG19_m3026   LG19_m163917    0.657
-    ## 45    LG6_m104199-LG6_m34544    LG6_m219262    0.821
-    ## 46 LG10_m153546-LG10_m254187   LG10_m160161   0.389*
-    ## 47   LG16_m102007-LG16_m1644   LG16_m256633    0.925
-    ## 48  LG19_m62803-LG19_m176482   LG19_m164757 0.049***
-    ## 49 LG24_m112367-LG24_m115022   LG24_m117386   0.546*
-    ## 50 LG13_m131941-LG13_m152483   LG13_m152483    0.935
-    ## 51  LG19_m62803-LG19_m176482   LG19_m164757   0.143*
-    ## 52  LG19_m62803-LG19_m239080   LG19_m163917    0.791
-    ## 53  LG15_m214988-LG15_m85151     LG15_m1307    0.804
-    ## 54    LG6_m104199-LG6_m34544    LG6_m219262    0.732
-    ## 55 LG10_m153546-LG10_m254187   LG10_m160161     0.88
-    ## 56   LG14_m187879-LG14_m2633     LG14_m3973    0.865
-    ## 57   LG16_m102007-LG16_m1644   LG16_m256633    0.923
-    ## 58 LG19_m164757-LG19_m176482   LG19_m164757 0.014***
-    ## 59 LG24_m112367-LG24_m115022   LG24_m117386   0.433*
-    ## 60    LG6_m104199-LG6_m34544    LG6_m102306    0.927
-    ## 61  LG13_m22723-LG13_m152483   LG13_m152483   0.316*
-    ## 62 LG19_m163917-LG19_m176482   LG19_m164757    0.741
-    ## 63 LG24_m112367-LG24_m115022   LG24_m117386    0.13*
+    ## 1  LG13_m213796-LG13_m152483    LG13_m95830   0.232*
+    ## 2    LG14_m187879-LG14_m3973   LG14_m232116    0.34*
+    ## 3     LG16_m98366-LG16_m1644   LG16_m256179    0.858
+    ## 4     LG17_m66485-LG17_m2335    LG17_m26429    0.888
+    ## 5     LG19_m62803-LG19_m3026   LG19_m164757   0.426*
+    ## 6   LG20_m66136-LG20_m233715    LG20_m99144   0.207*
+    ## 7   LG22_m172088-LG22_m55365    LG22_m55365    0.931
+    ## 8  LG24_m115022-LG24_m158249   LG24_m115022   0.144*
+    ## 9  LG13_m239247-LG13_m152483   LG13_m152483   0.608*
+    ## 10 LG14_m187879-LG14_m140735   LG14_m232116   0.312*
+    ## 11  LG17_m66485-LG17_m186932    LG17_m26429    0.762
+    ## 12   LG19_m248944-LG19_m3026   LG19_m164757   0.432*
+    ## 13  LG20_m66136-LG20_m233715   LG20_m249499   0.156*
+    ## 14 LG24_m115022-LG24_m158249   LG24_m115022  0.097**
+    ## 15  LG26_m228710-LG26_m99216   LG26_m228710    0.828
+    ## 16 LG13_m116284-LG13_m152483    LG13_m95830   0.269*
+    ## 17  LG14_m187879-LG14_m99155    LG14_m33308   0.303*
+    ## 18   LG16_m256633-LG16_m1644   LG16_m256179   0.577*
+    ## 19  LG17_m66485-LG17_m242212    LG17_m26429    0.895
+    ## 20  LG19_m255575-LG19_m38508   LG19_m164757   0.423*
+    ## 21  LG20_m66136-LG20_m233715    LG20_m99144   0.308*
+    ## 22 LG24_m115022-LG24_m158249   LG24_m115022   0.269*
+    ## 23    LG2_m27444-LG2_m221845     LG2_m23665    0.781
+    ## 24 LG13_m110230-LG13_m152483    LG13_m95830   0.589*
+    ## 25   LG14_m187879-LG14_m2633    LG14_m33308    0.837
+    ## 26    LG16_m98366-LG16_m1644   LG16_m256179    0.639
+    ## 27 LG19_m195831-LG19_m176482    LG19_m62803   0.461*
+    ## 28  LG20_m66136-LG20_m233715   LG20_m249499    0.48*
+    ## 29 LG13_m239247-LG13_m152483    LG13_m95830    0.734
+    ## 30    LG16_m98366-LG16_m1644    LG16_m85999    0.833
+    ## 31  LG19_m222416-LG19_m38508   LG19_m164757   0.532*
+    ## 32 LG13_m131941-LG13_m152483    LG13_m95830    0.882
+    ## 33   LG14_m187879-LG14_m3973   LG14_m232116    0.679
+    ## 34   LG16_m256633-LG16_m1644    LG16_m85999    0.838
+    ## 35  LG19_m195831-LG19_m38508   LG19_m164757   0.532*
+    ## 36   LG4_m158167-LG4_m179103    LG4_m158167    0.703
+    ## 37 LG25_m148704-LG25_m118219    LG25_m42909    0.871
+    ## 38   LG19_m234493-LG19_m3026    LG19_m62803    0.859
+    ## 39 LG25_m148704-LG25_m196841    LG25_m26868   0.333*
+    ## 40    LG6_m249118-LG6_m34544     LG6_m51714   0.562*
+    ## 41 LG13_m131941-LG13_m116284   LG13_m129765    0.814
+    ## 42  LG17_m26429-LG17_m186932   LG17_m181813    0.38*
+    ## 43  LG22_m204703-LG22_m55365     LG22_m3697     0.93
+    ## 44 LG25_m148704-LG25_m198798    LG25_m26868  0.051**
+    ## 45 LG25_m148704-LG25_m198798    LG25_m26868   0.158*
+    ## 46  LG21_m78042-LG21_m103080   LG21_m168769    0.809
+    ## 47    LG6_m102306-LG6_m34544     LG6_m51714   0.457*
+    ## 48     LG9_m74935-LG9_m61458    LG9_m235200      0.9
+    ## 49 LG13_m131941-LG13_m152483   LG13_m129765     0.71
+    ## 50  LG17_m66485-LG17_m186932   LG17_m181813    0.856
+    ## 51 LG20_m213579-LG20_m112128    LG20_m66136    0.832
+    ## 52 LG22_m102393-LG22_m213924   LG22_m159568    0.897
+    ## 53  LG25_m86542-LG25_m152494    LG25_m26868 0.007***
+    ## 54 LG25_m148704-LG25_m108773   LG25_m121157   0.189*
+    ## 55    LG6_m201323-LG6_m34544     LG6_m51714   0.158*
+    ## 56 LG13_m131941-LG13_m116284    LG13_m32070    0.929
+    ## 57 LG19_m195831-LG19_m251298   LG19_m234493   0.345*
+    ## 58  LG25_m148704-LG25_m83002   LG25_m153207    0.749
+    ## 59    LG6_m162041-LG6_m51714    LG6_m201323   0.514*
 
 QTL pairs summary
 
@@ -838,9 +830,16 @@ for(i in 1:2){
 }
 ```
 
-    ## Warning in addpair(data, q[, 1], p, rqtl2.bin[[p]], maxit = 1e+06, tol = 0.2, : Dropping 31 individuals with missing phenotypes.
+    ## Warning in matchchr(chr, names(cross$geno)): Dropping duplicate chromosomes
 
     ## Warning in addpair(data, q[, 1], p, rqtl2.bin[[p]], maxit = 1e+06, tol = 0.2, : Dropping 31 individuals with missing phenotypes.
+
+    ## Warning in fitqtlengine(pheno = pheno, qtl = qtl.obj, covar = covar, formula =
+    ## formula, : Didn't converge.
+
+    ## Warning in fitqtlengine(pheno = pheno, qtl = qtl, covar = covar, formula = formula, : Dropping 31 individuals with missing phenotypes.
+
+    ## Warning in matchchr(chr, names(cross$geno)): Dropping duplicate chromosomes
 
 ``` r
 for (i in 1:length(qtlpairs)){
@@ -849,11 +848,12 @@ if(nrow(qtlpairs[[i]])>0 && names(qtlpairs[[i]])[1]!="Trait"){
   }
 }
 qtlpairsdf<-do.call(rbind.data.frame,c(qtlpairs,make.row.names=F))
-#interacting QTL
+##interacting QTL detected for AFL
 qtlpairsdf<-c(qtlpairsdf,thr=m[qtlpairsdf[,1],])
 ```
 
-No interactive QTL pair was found in the add pair scan.
+One interactive QTL pair was found in the add pair scan for AFL
+phenotype.
 
 # Linkage Map view
 
@@ -919,17 +919,18 @@ for (i in 1:6) {
 outfile<-file.path("results/basil_QTLs.anthocyanin.pdf")
 mapthese<-paste0("LG",sort(unique(as.numeric(qtldf$chr))))
 main<-paste0("Basil Genetic Map + QTLs for Anthocyanin (",paste0(mapthese,collapse = ","),")")
-setting<-modifyList(setting,list(outfile=outfile,mapthese=mapthese,main=main,qtldf=qtldf))
+setting<-modifyList(setting,list(outfile=outfile,mapthese=mapthese,main=main))
+setting$qtldf<-qtldf
 do.call(lmv.linkage.plot,setting)
 ```
 
-    ## Required pdf.width = 12.6796666666667
+    ## Required pdf.width = 12.865
 
-    ## Required pdf.height = 12.7896666666667
+    ## Required pdf.height = 14.6325333333333
 
     ## Using pdf.width = 13
 
-    ## Using pdf.height = 13
+    ## Using pdf.height = 15
 
 Fusarium QTL map
 
@@ -954,20 +955,22 @@ for (i in 7:10) {
 }
 i<-1
 p<-phenames(data)[i+n]
-qtls<-summary(scan1.bin,perms=scan1perm.bin,format="tabByCol",alpha=alp,ci.function="bayesint")[[p]]
-if(nrow(qtls)>0){
-  for (j in 1:nrow(qtls)) {
-    bay <-bayesint(scan1.bin[,c(1:2,2+i)],chr=qtls$chr[j])
-    qtldf <- rbind(qtldf,
-                   data.frame(
-                     chr = qtls$chr[j],
-                     qtl = colnames(bay)[3],
-                     so = bay$pos[1],
-                     si = bay$pos[2],
-                     ei = bay$pos[2],
-                     eo = bay$pos[3],
-                     col=colorlist[7]))
-  }
+qtls<-summary(scan1.bin,perms=scan1perm.bin,format="tabByCol",alpha=alp,ci.function="bayesint")
+if(nrow(qtls[[p]])>0){
+for (j in 1:(nrow(qtls[[p]])+1)) {
+    if(j==3){
+      qtls[[p]]<-rbind(qtls[[p]],cbind(s.aq[[p]][,-3],`ci.low`=bayesint(out.aq.bin[[p]],s.aq[[p]][,1])[1,2],`ci.high`=bayesint(out.aq.bin[[p]],s.aq[[p]][,1])[3,2],`lod`=s.aq[[p]][,3]))
+    }
+    qtldf<-rbind(qtldf,
+                 data.frame(
+                   chr = qtls[[p]]$chr[j],
+                   qtl = p,
+                   so = qtls[[p]]$`ci.low`[j],
+                   si = qtls[[p]]$pos[j],
+                   ei = qtls[[p]]$pos[j],
+                   eo = qtls[[p]]$`ci.high`[j],
+                   col=colorlist[7]))
+}
 }
 outfile<-file.path("results/basil_QTLs.fusarium.pdf")
 mapthese<-paste0("LG",sort(unique(as.numeric(qtldf$chr))))
@@ -977,13 +980,13 @@ setting$qtldf<-qtldf
 do.call(lmv.linkage.plot,setting)
 ```
 
-    ## Required pdf.width = 10.1183333333333
+    ## Required pdf.width = 10.6533333333333
 
-    ## Required pdf.height = 6.74613333333333
+    ## Required pdf.height = 8.0864
 
     ## Using pdf.width = 11
 
-    ## Using pdf.height = 7
+    ## Using pdf.height = 9
 
 Downy Mildew QTL map
 
@@ -991,21 +994,21 @@ Downy Mildew QTL map
 qtldf<-qtldf_initial()
 i<-2
 p<-phenames(data)[i+n]
-qtls<-summary(scan1.bin,perms=scan1perm.bin,format="tabByCol",alpha=alp,ci.function="bayesint")[[p]]
-
-if(nrow(qtls)>0){
-  for (j in 1:nrow(qtls)) {
-    bay <-bayesint(scan1.bin[,c(1:2,2+i)],chr=qtls$chr[j])
-    qtldf <- rbind(qtldf,
-                   data.frame(
-                     chr = qtls$chr[j],
-                     qtl = colnames(bay)[3],
-                     so = bay$pos[1],
-                     si = bay$pos[2],
-                     ei = bay$pos[2],
-                     eo = bay$pos[3],
-                     col=colorlist[7]))
-  }
+if(nrow(qtls[[p]])>0){
+for (j in 1:(nrow(qtls[[p]])+1)) {
+    if(j==3){
+      qtls[[p]]<-rbind(qtls[[p]],cbind(s.aq[[p]][,-3],`ci.low`=bayesint(out.aq.bin[[p]],s.aq[[p]][,1])[1,2],`ci.high`=bayesint(out.aq.bin[[p]],s.aq[[p]][,1])[3,2],`lod`=s.aq[[p]][,3]))
+    }
+    qtldf<-rbind(qtldf,
+                 data.frame(
+                   chr = qtls[[p]]$chr[j],
+                   qtl = p,
+                   so = qtls[[p]]$`ci.low`[j],
+                   si = qtls[[p]]$pos[j],
+                   ei = qtls[[p]]$pos[j],
+                   eo = qtls[[p]]$`ci.high`[j],
+                   col=colorlist[7]))
+}
 }
 outfile<-file.path("results/basil_QTLs.BDM.pdf")
 mapthese<-paste0("LG",sort(unique(as.numeric(qtldf$chr))))
@@ -1015,12 +1018,24 @@ setting$qtldf<-qtldf
 do.call(lmv.linkage.plot,setting)
 ```
 
-    ## Required pdf.width = 5.93266666666667
+    ## Required pdf.width = 6.46766666666667
 
-    ## Required pdf.height = 8.0864
+    ## Required pdf.height = 6.74613333333333
 
-    ## Using pdf.width = 6
+    ## Using pdf.width = 7
 
-    ## Using pdf.height = 9
+    ## Using pdf.height = 7
 
 The pdf files are in the results folder.
+
+There are some matching chromosomes for each phenotypes’ group. For
+example, the fusarium group is mainly on LG25.
+
+The Anthocyanin group is mainly on LG19 where there’s also BDM
+resistance locus. This is an interesting finding. It’s worth checking
+out the markers on this position, align them to the genome and find out
+what this locus is responible for, if there is a connection between
+anthocyanin and downy mildew resistance. The phenotypes’ correlation
+showed no connection though.
+
+Thanks for reading my project, please share your thoughts with me!
