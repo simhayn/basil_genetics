@@ -39,7 +39,7 @@ The repository includes a markdown file [basil-genetics.md](basil-genetics.md) o
 6. **QTL Visualization on the Map using LinkageMapView**
 
 ## Data
-The fictive data used in this project include genotypic and phenotypic datasets for basil. The original data is private.
+The fictive data used in this project includes genotypic and phenotypic data for F2 population of basil. The original data is private.
 
 ## Contributing
 I welcome contributions to this project! If you have suggestions, bug reports, or improvements, please open an issue or submit a pull request.
